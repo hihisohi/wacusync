@@ -1,0 +1,8 @@
+/* public/assets/css/modal.css */
+.modal {
+  display: none;
+  /* ... 기존 스타일 ... */
+}
+.modal.active {
+  display: flex; /* 또는 block/flex 등 */
+}
