@@ -6,15 +6,84 @@
     <title><?= htmlspecialchars($title ?? 'My App') ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <?php
+    // 파일 존재 여부와 filemtime을 안전하게 확인하는 헬퍼 함수
+    function getFileVersionParam($relativePath) {
+        $publicPath = __DIR__ . '/../../../public' . $relativePath;
+        if (file_exists($publicPath)) {
+            return '?v=' . filemtime($publicPath);
+        }
+        return '';
+    }
+    ?>
+
+    <!-- 폰트 -->
+    <link rel="stylesheet" href="/assets/fonts/font.css">
+
     <!-- 공통 CSS -->
-    <link rel="stylesheet"
-        href="/assets/css/common.css?v=<?= filemtime(__DIR__.'/../../../public/assets/css/common.css') ?>">
+    <?php
+        $resetCssPath = '/assets/css/reset.css';
+        $commonCssPath = '/assets/css/common.css';
+    ?>
+    <link rel="stylesheet" href="<?= $resetCssPath . getFileVersionParam($resetCssPath) ?>">
+    <link rel="stylesheet" href="<?= $commonCssPath . getFileVersionParam($commonCssPath) ?>">
 
     <!-- 모듈별 CSS (있으면) -->
     <?php if (!empty($module)): ?>
-    <link rel="stylesheet"
-        href="/assets/<?= $module ?>/<?= $module ?>.css?v=<?= filemtime(__DIR__."/../../../public/assets/{$module}/{$module}.css") ?>">
+    <?php
+        $moduleCssPath = "/assets/css/{$module}/{$module}.css";
+        $modulePublicPath = __DIR__ . "/../../../public" . $moduleCssPath;
+        if (file_exists($modulePublicPath)):
+    ?>
+    <link rel="stylesheet" href="<?= $moduleCssPath . getFileVersionParam($moduleCssPath) ?>">
+    <?php endif; ?>
+    <?php endif; ?>
+
+    <!-- 페이지별 추가 CSS -->
+    <?php if (!empty($cssFiles) && is_array($cssFiles)): ?>
+    <?php foreach($cssFiles as $css): ?>
+    <?php
+        $cssPublicPath = __DIR__ . '/../../../public' . $css;
+        if (file_exists($cssPublicPath)):
+    ?>
+    <link rel="stylesheet" href="<?= htmlspecialchars($css) . getFileVersionParam($css) ?>">
+    <?php endif; ?>
+    <?php endforeach; ?>
+    <?php endif; ?>
+
+    <!-- 공통 JS -->
+    <?php
+        $commonJsPath = '/assets/js/common.js';
+        $commonJsPublicPath = __DIR__ . '/../../../public' . $commonJsPath;
+        if (file_exists($commonJsPublicPath)):
+    ?>
+    <script defer type="module" src="<?= $commonJsPath . getFileVersionParam($commonJsPath) ?>"></script>
+    <?php endif; ?>
+
+    <!-- 모듈별 JS (있으면) -->
+    <?php if (!empty($module)): ?>
+    <?php
+        $moduleJsPath = "/assets/js/{$module}/{$module}.js";
+        $moduleJsPublicPath = __DIR__ . "/../../../public" . $moduleJsPath;
+        if (file_exists($moduleJsPublicPath)):
+    ?>
+    <script defer type="module" src="<?= $moduleJsPath . getFileVersionParam($moduleJsPath) ?>"></script>
+    <?php endif; ?>
+    <?php endif; ?>
+
+    <!-- 페이지별 추가 JS -->
+    <?php if (!empty($jsFiles) && is_array($jsFiles)): ?>
+    <?php foreach($jsFiles as $js): ?>
+    <?php
+        $jsPublicPath = __DIR__ . '/../../../public' . $js;
+        if (file_exists($jsPublicPath)):
+    ?>
+    <script defer type="module" src="<?= htmlspecialchars($js) . getFileVersionParam($js) ?>"></script>
+    <?php endif; ?>
+    <?php endforeach; ?>
     <?php endif; ?>
 </head>
 
 <body>
+    <!-- START :: WRAP -->
+    <div class="wrap">

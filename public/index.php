@@ -19,75 +19,63 @@ PSR-4 오토로딩으로 클래스를 간편하게 관리
 -->
 
 
-<!-- <?php
+<?php
+// 1. 에러 리포팅
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// 1. 에러 리포팅 및 환경 초기화
-// ini_set('display_errors', 1);
-// error_reporting(E_ALL);
-// session_start();
-
-// 2. 오토로더 로드 (Composer, 또는 PSR-4 오토로딩)
+// 2. 세션/오토로더/설정 등 필요하다면
+session_start();
 // require __DIR__ . '/../vendor/autoload.php';
-
-// 3. 설정 파일 로드
 // $config = require __DIR__ . '/../config/app.php';
 
-// 4. 간단한 라우터 초기화 (FastRoute 예시)
-use FastRoute\RouteCollector;
+// 3. 요청 경로 파싱
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$page = trim($uri, '/');         // '/dashboard' → 'dashboard'
 
-$dispatcher = FastRoute\simpleDispatcher(function(RouteCollector $r) {
-    // URL 패턴 ↔ 컨트롤러 매핑
-    $r->addRoute('GET',  '/',           ['src\Controller\HomeController',   'index']);
-    $r->addRoute('GET',  '/login',      ['src\Controller\AuthController',   'showLoginForm']);
-    $r->addRoute('POST', '/login',      ['src\Controller\AuthController',   'login']);
-    $r->addRoute('GET',  '/api/data',   ['src\Controller\Api\DataController','fetch']);
-    $r->addRoute('GET', '/dashboard',   ['src\Controller\DashboardController','index']);
-    // ... 그 외 라우트들
-});
-
-// 5. 현재 요청 URI와 메서드 파싱
-$httpMethod = $_SERVER['REQUEST_METHOD'];
-$uri = $_SERVER['REQUEST_URI'];
-if (false !== $pos = strpos($uri, '?')) {
-    $uri = substr($uri, 0, $pos);
-}
-$uri = rawurldecode($uri);
-
-// 6. 라우팅 실행
-$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
-switch ($routeInfo[0]) {
-    case FastRoute\Dispatcher::NOT_FOUND:
-        header("HTTP/1.0 404 Not Found");
-        echo '404 페이지를 찾을 수 없습니다.';
-        break;
-    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        header("HTTP/1.0 405 Method Not Allowed");
-        echo '허용되지 않는 HTTP 메서드입니다.';
-        break;
-    case FastRoute\Dispatcher::FOUND:
-        list(, $handler, $vars) = $routeInfo;
-        list($controllerClass, $method) = $handler;
-        // 7. 컨트롤러 인스턴스 생성 후 메서드 호출
-        $controller = new $controllerClass($config);
-        call_user_func_array([$controller, $method], $vars);
-        break;
-}
-
-?> -->
-
-
-<?php
-// 페이지 파라미터에 따라 뷰를 결정하는 간단한 프론트 스터브
-$page   = $_GET['page'] ?? 'dashboard';
-
-$allowed = ['dashboard', 'stats'];
-
-if (!in_array($page, $allowed)) {
+if ($page === '') {
     $page = 'dashboard';
 }
 
-$module = $page;
-$title  = ucfirst($page) . ' | My CRM';
-$view   = __DIR__ . '/../src/View/' . $page . '/index.php';
+// 4. 라우트 정의 (페이지명 → 뷰 또는 콜러블)
+$routes = [
+    'login' => function() {
+        $title  = 'Login';
+        $module = 'login';
+        $view   = __DIR__ . '/../src/View/auth/login.php';
+        include __DIR__ . '/../src/View/layouts/index.php';
+    },
+    'find-id' => function() {
+        $title  = 'Find ID';
+        $module = 'find-id';
+        $view   = __DIR__ . '/../src/View/auth/find-id.php';
+        include __DIR__ . '/../src/View/layouts/index.php';
+    },
+    'find-pw' => function() {
+        $title  = 'Find PW';
+        $module = 'find-pw';
+        $view   = __DIR__ . '/../src/View/auth/find-pw.php';
+        include __DIR__ . '/../src/View/layouts/index.php';
+    },
+    'dashboard' => function() {
+        $title  = 'Dashboard';
+        $module = 'dashboard';
+        $view   = __DIR__ . '/../src/View/dashboard/index.php';
+        include __DIR__ . '/../src/View/layouts/index.php';
+    },
+    'stats'     => function() {
+        $title  = 'Stats';
+        $module = 'stats';
+        $view   = __DIR__ . '/../src/View/stats/index.php';
+        include __DIR__ . '/../src/View/layouts/index.php';
+    },
+    // 필요에 따라 다른 라우트 추가...
+];
 
-include __DIR__ . '/../src/View/layouts/index.php';
+// 5. 라우트 실행 또는 404
+if (isset($routes[$page])) {
+    $routes[$page]();
+} else {
+    header("HTTP/1.0 404 Not Found");
+    echo "<h1>404 Not Found</h1>";
+}

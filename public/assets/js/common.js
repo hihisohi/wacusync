@@ -1,31 +1,32 @@
-// public/assets/js/common.js
+document.addEventListener("DOMContentLoaded", function () {
+  // 초기 설정
+  setVhProperty();
 
-/**
- * id에 해당하는 모달을 보여줍니다.
- * @param {string} id - modal 요소의 id
- */
-function showModal(id) {
-  const modal = document.getElementById(id);
-  if (!modal) return console.warn(`Modal with id="${id}" not found.`);
-  modal.classList.add("active");
-}
+  // 브라우저 UI(주소창 등)로 인해 변동되는 뷰포트 높이 문제를 해결
+  function setVhProperty() {
+    // 실제 화면 높이를 정확히 측정
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
 
-/**
- * id에 해당하는 모달을 숨깁니다.
- * @param {string} id - modal 요소의 id
- */
-function closeModal(id) {
-  const modal = document.getElementById(id);
-  if (!modal) return console.warn(`Modal with id="${id}" not found.`);
-  modal.classList.remove("active");
-}
+  // 리사이즈 이벤트 (orientation 변경 포함)
+  window.addEventListener("resize", setVhProperty);
 
-// 모달 헤더의 닫기 버튼(data-dismiss="modal") 자동 바인딩
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll('[data-dismiss="modal"]').forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const modal = btn.closest(".modal");
-      if (modal) modal.classList.remove("active");
-    });
-  });
+  //   // 모바일에서 주소창 숨김/표시 감지
+  //   window.addEventListener("orientationchange", () => {
+  //     // orientationchange 후 약간의 지연을 두고 재계산
+  //     setTimeout(setVhProperty, 100);
+  //   });
+
+  //   // iOS Safari의 경우 추가 처리
+  //   if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+  //     window.addEventListener("scroll", setVhProperty);
+  //     // 화면 터치 시에도 재계산
+  //     document.addEventListener("touchstart", setVhProperty);
+  //   }
+
+  //   // Visual Viewport API 지원 브라우저에서 더 정확한 처리
+  //   if (window.visualViewport) {
+  //     window.visualViewport.addEventListener("resize", setVhProperty);
+  //   }
 });
