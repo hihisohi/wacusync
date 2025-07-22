@@ -1,6 +1,8 @@
 // 폼 입력값 유효성 검사 에러 메시지 매핑
 const VALIDATION_ERROR_MESSAGES = {
-  EMPTY_ERROR: "입력값이 비어있습니다.",
+  EMPTY_ERROR: "로그인 정보를 입력해주세요.",
+  EMPTY_ID_ERROR: "이메일을 입력해주세요.",
+  EMPTY_PASSWORD_ERROR: "비밀번호를 입력해주세요.",
   EMAIL_TYPE_ERROR: "올바른 이메일 형식이 아닙니다.",
   LENGTH_ERROR: "비밀번호는 8자리 이상이어야 합니다.",
   COMBINATION_ERROR:
@@ -24,66 +26,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
   initLoginView();
 
-  function initLoginView() {
-    inputUserId.focus();
-    loginButton.disabled = true;
-  }
+  const clearBtns = document.querySelectorAll(".btn--clear");
 
-  // 폼 유효성 체크 함수
-  function checkFormValidity() {
-    const userIdValue = inputUserId.value.trim();
-    const userPwValue = inputUserPw.value.trim();
+  clearBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const input = btn.closest(".input-item").querySelector("input");
 
-    // 모든 필드가 빈값이 아닐 때만 버튼 활성화
-    if (userIdValue && userPwValue) {
-      loginButton.disabled = false;
-    } else {
-      loginButton.disabled = true;
-    }
-  }
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+
+      btn.style.display = "none";
+    });
+  });
 
   // input 값 변경 시 폼 유효성 체크
   inputUserId.addEventListener("input", (e) => {
+    const clearBtn = e.target
+      .closest(".input-item")
+      .querySelector(".btn--clear");
+
+    if (e.target.value !== "") {
+      clearBtn.style.display = "block";
+    } else {
+      clearBtn.style.display = "none";
+    }
+
     e.target.classList.remove("error");
-    e.target.nextElementSibling.textContent = "";
-    checkFormValidity();
+    document.querySelector(`[data-input-error="userId"]`).textContent = "";
+
+    handleLoginButton();
   });
 
   inputUserPw.addEventListener("input", (e) => {
-    e.target.classList.remove("error");
-    e.target.nextElementSibling.textContent = "";
-    checkFormValidity();
-  });
+    const clearBtn = e.target
+      .closest(".input-item")
+      .querySelector(".btn--clear");
 
-  /**
-   * 입력 필드의 유효성을 검사하고 UI를 업데이트하는 함수
-   * @param {HTMLElement} inputElement - 검사할 input 요소
-   * @param {Function} validationFunction - 유효성 검사 함수
-   * @param {string} fieldName - 필드명 (에러 로깅용)
-   * @returns {boolean} 유효성 검사 통과 여부 (true: 통과, false: 실패)
-   */
-  function validateField(inputElement, validationFunction, fieldName) {
-    const value = inputElement.value;
-    const errorElement = inputElement.nextElementSibling;
-    const validationResult = validationFunction(value);
-
-    if (validationResult !== null) {
-      // 유효성 검사 실패 - 에러 상태로 변경
-      errorElement.textContent = getErrorMessage(validationResult);
-      inputElement.focus();
-      inputElement.classList.add("error");
-
-      loginButton.disabled = true;
-
-      return false;
+    if (e.target.value !== "") {
+      clearBtn.style.display = "block";
     } else {
-      // 유효성 검사 통과 - 에러 상태 초기화
-      inputElement.classList.remove("error");
-      errorElement.textContent = "";
-
-      return true;
+      clearBtn.style.display = "none";
     }
-  }
+
+    e.target.classList.remove("error");
+    document.querySelector(`[data-input-error="userPw"]`).textContent = "";
+
+    handleLoginButton();
+  });
 
   // 로그인 폼 제출
   loginForm.addEventListener("submit", function (e) {
@@ -127,6 +117,56 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  function initLoginView() {
+    inputUserId.focus();
+    loginButton.classList.add("disabled");
+  }
+
+  // 로그인 버튼 활성화 여부 체크
+  function handleLoginButton() {
+    const userIdValue = inputUserId.value.trim();
+    const userPwValue = inputUserPw.value.trim();
+
+    // 모든 필드가 빈값이 아닐 때만 버튼 활성화
+    if (userIdValue && userPwValue) {
+      loginButton.classList.remove("disabled");
+    } else {
+      loginButton.classList.add("disabled");
+    }
+  }
+
+  /**
+   * 입력 필드의 유효성을 검사하고 UI를 업데이트하는 함수
+   * @param {HTMLElement} inputElement - 검사할 input 요소
+   * @param {Function} validationFunction - 유효성 검사 함수
+   * @param {string} fieldName - 필드명 (에러 로깅용)
+   * @returns {boolean} 유효성 검사 통과 여부 (true: 통과, false: 실패)
+   */
+  function validateField(inputElement, validationFunction, fieldName) {
+    const value = inputElement.value;
+    const errorElement = document.querySelector(
+      `[data-input-error="${fieldName}"]`
+    );
+    const validationResult = validationFunction(value);
+
+    if (validationResult !== null) {
+      // 유효성 검사 실패 - 에러 상태로 변경
+      errorElement.textContent = getErrorMessage(validationResult);
+      inputElement.focus();
+      inputElement.classList.add("error");
+
+      loginButton.classList.add("disabled");
+
+      return false;
+    } else {
+      // 유효성 검사 통과 - 에러 상태 초기화
+      inputElement.classList.remove("error");
+      errorElement.textContent = "";
+
+      return true;
+    }
+  }
+
   let baseHeight = window.visualViewport
     ? window.visualViewport.height
     : window.innerHeight;
@@ -134,47 +174,72 @@ document.addEventListener("DOMContentLoaded", function () {
   function onKeyboardChange(isOpen) {
     // 실제 UI 조정 로직
     if (isOpen) {
-      inputUserId.value = "키보드 열림";
-
-      document.querySelector(".login__button").style.position = "fixed";
-      document.querySelector(".login__button").style.bottom = "0";
-      document.querySelector(".login__button").style.left = "0";
-      document.querySelector(".login__button").style.width = "100%";
+      updateButtonPosition();
     } else {
-      inputUserId.value = "키보드 닫힘";
+      // 키보드가 닫혔을 때 버튼 스타일 초기화
+      resetButtonPosition();
     }
+  }
+
+  function updateButtonPosition() {
+    const button = document.querySelector(".login__button");
+    if (!button) return;
+
+    // 키보드 높이 계산
+    const keyboardHeight = window.innerHeight - window.visualViewport.height;
+
+    // 현재 스크롤 위치 고려하여 버튼 위치 조정
+    const scrollOffset = window.visualViewport.offsetTop || 0;
+
+    button.style.position = "fixed";
+    button.style.bottom = keyboardHeight + "px";
+    button.style.left = "0";
+    button.style.width = "100%";
+    button.style.transform = `translate3d(0, ${scrollOffset}px, 0)`;
+    button.style.borderRadius = "0";
+    button.style.zIndex = "1000";
+  }
+
+  function resetButtonPosition() {
+    const button = document.querySelector(".login__button");
+    if (!button) return;
+
+    button.style.position = "";
+    button.style.bottom = "";
+    button.style.left = "";
+    button.style.width = "";
+    button.style.transform = "";
+    button.style.borderRadius = "";
   }
 
   const onResize = () => {
     const h = window.visualViewport?.height ?? window.innerHeight;
-    onKeyboardChange(h < baseHeight - 100);
+    const isKeyboardOpen = h < baseHeight - 100;
+    onKeyboardChange(isKeyboardOpen);
+
+    // 키보드가 열린 상태에서 리사이즈 시 버튼 위치 업데이트
+    if (isKeyboardOpen) {
+      updateButtonPosition();
+    }
+  };
+
+  const onScroll = () => {
+    const h = window.visualViewport?.height ?? window.innerHeight;
+    const isKeyboardOpen = h < baseHeight - 100;
+
+    // 키보드가 열린 상태에서만 스크롤 시 버튼 위치 업데이트
+    if (isKeyboardOpen) {
+      updateButtonPosition();
+    }
   };
 
   window.addEventListener("resize", onResize);
 
-  //   function adjustButtonAboveKeyboard() {
-  //     const wrapper = document.querySelector(".login__button");
-  //     if (!wrapper) return;
-
-  //     // 화면 전체 높이와 실제 보이는 높이 차이를 키보드 높이로 간주
-  //     const viewportHeight = window.visualViewport
-  //       ? window.visualViewport.height
-  //       : window.innerHeight;
-  //     const keyboardHeight = window.innerHeight - viewportHeight;
-
-  //     // 키보드가 열렸으면 bottom을 키보드 높이만큼 올려 줌
-  //     wrapper.style.position = "fixed";
-  //     wrapper.style.left = "0";
-  //     wrapper.style.bottom = (keyboardHeight > 0 ? keyboardHeight : 0) + "px";
-  //     wrapper.style.width = "100%";
-  //     wrapper.style.borderRadius = "0";
-  //     wrapper.style.zIndex = "1000";
-  //   }
-
-  //   // 초기 호출 및 리사이즈 바인딩
-  //   window.addEventListener("resize", adjustButtonAboveKeyboard);
-  //   window.addEventListener("orientationchange", adjustButtonAboveKeyboard);
-  //   adjustButtonAboveKeyboard();
+  // visualViewport 스크롤 이벤트 감지
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("scroll", onScroll);
+    window.visualViewport.addEventListener("resize", onResize);
+  }
 });
 
 /**
@@ -185,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function validateUserId(value) {
   // 빈값 체크
   if (!value || value.trim() === "") {
-    return "EMPTY_ERROR";
+    return "EMPTY_ID_ERROR";
   }
 
   const email = value.trim();
@@ -207,7 +272,7 @@ function validateUserId(value) {
 function validateUserPw(value) {
   // 빈값 체크
   if (!value || value.trim() === "") {
-    return "EMPTY_ERROR";
+    return "EMPTY_PASSWORD_ERROR";
   }
 
   const password = value.trim();
@@ -239,7 +304,10 @@ function resetValidateField(inputElements) {
   inputElements.forEach((inputElement) => {
     inputElement.classList.remove("error");
 
-    const errorElement = inputElement.nextElementSibling;
+    const errorElement = document.querySelector(
+      `[data-input-error="${inputElement.id}"]`
+    );
+
     if (errorElement) {
       errorElement.textContent = "";
     }

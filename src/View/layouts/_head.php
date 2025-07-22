@@ -24,9 +24,11 @@
     <?php
         $resetCssPath = '/assets/css/reset.css';
         $commonCssPath = '/assets/css/common.css';
+        $layoutCssPath = '/assets/css/layout.css';
     ?>
     <link rel="stylesheet" href="<?= $resetCssPath . getFileVersionParam($resetCssPath) ?>">
     <link rel="stylesheet" href="<?= $commonCssPath . getFileVersionParam($commonCssPath) ?>">
+    <link rel="stylesheet" href="<?= $layoutCssPath . getFileVersionParam($layoutCssPath) ?>">
 
     <!-- 모듈별 CSS (있으면) -->
     <?php if (!empty($module)): ?>

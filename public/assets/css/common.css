@@ -1,9 +1,19 @@
 :root {
   --background: #222836;
+
   --color-main-bg: #181928;
   --color-main-text: #fff;
+
+  --color-secondary-bg: rgba(33, 35, 58, 0.8);
+  --color-secondary-border: rgba(255, 255, 255, 0.14);
+
+  --color-blue: #3f8cff;
+
   --color-active: #3f8cff;
   --color-error: #e42d4a;
+
+  --color-increase: #05ba7b;
+  --color-decrease: #fb3636;
 }
 
 html,
@@ -43,5 +53,178 @@ body {
   margin: 0 auto;
   background-color: var(--color-main-bg);
 
-  padding: 0 20px;
+  overflow: hidden;
+}
+
+.blind {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+}
+
+/* 아이콘 */
+.icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+}
+
+.icon--clear {
+  background-image: url("/public/assets/images/common/icon/input-clear.svg");
+}
+
+.icon--go-back {
+  background-image: url("/public/assets/images/common/icon/go-back.svg");
+}
+
+.icon--go-link {
+  background-image: url("/public/assets/images/common/icon/go-link.svg");
+}
+
+.icon--arrow-down {
+  background-image: url("/public/assets/images/common/icon/arrow-down.svg");
+}
+
+.icon--increase {
+  background-image: url("/public/assets/images/common/icon/increase.svg");
+}
+
+.icon--decrease {
+  background-image: url("/public/assets/images/common/icon/decrease.svg");
+}
+
+/* 버튼 */
+.btn {
+}
+
+.btn--default {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 19px;
+  font-weight: 500;
+  padding: 1.05em 1em;
+
+  background: #3f8cff;
+  border-radius: 8px;
+
+  transition: none !important;
+  -webkit-transition: none !important;
+}
+
+.btn.disabled {
+  filter: contrast(0.4);
+  cursor: not-allowed;
+}
+
+.btn.full {
+  width: 100%;
+}
+
+/* margin, paddding */
+.m-b-10 {
+  margin-bottom: 10px;
+}
+
+.m-b-30 {
+  margin-bottom: 30px;
+}
+
+.m-b-80 {
+  margin-bottom: 80px;
+}
+
+.p-x-20 {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* dropdown custom */
+.custom-select {
+  position: relative;
+  font-size: 14px;
+}
+
+.custom-select__trigger {
+  position: relative;
+  z-index: 20;
+
+  width: 6em;
+  padding: 0.7em 2em 0.7em 1.2em;
+  border-radius: 1.6em;
+  background: var(--color-secondary-bg);
+  border: 1px solid var(--color-secondary-border);
+
+  transition: border-radius 0.3s ease;
+
+  cursor: pointer;
+}
+
+.custom-select__arrow {
+  position: absolute;
+  top: 50%;
+  right: 1em;
+  transform: translateY(-50%);
+
+  width: 0.7em;
+  height: 0.7em;
+}
+
+.custom-select__selected {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-select.open .custom-select__trigger {
+  border-radius: 1.6em 1.6em 0 0;
+}
+
+.custom-select__options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+
+  overflow: hidden;
+
+  background: #21233a;
+  border-radius: 0 0 1.6em 1.6em;
+  border: 0px solid var(--color-secondary-border);
+
+  text-align: center;
+
+  max-height: 0;
+  transform: translateY(-1em);
+  opacity: 0;
+  pointer-events: none;
+
+  transition: transform 0.3s ease, max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.custom-select.open .custom-select__options {
+  max-height: 12em;
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+
+  border: 1px solid var(--color-secondary-border);
+  border-top: 0;
+
+  padding: 0.25em 0;
+}
+
+.custom-select__option {
+  padding: 0.5em 1em;
+  cursor: pointer;
 }
