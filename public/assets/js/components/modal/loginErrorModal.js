@@ -24,8 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (action === "closeLoginErrorModal") {
-      const modal = e.target.closest(".modal");
-      if (modal) modal.classList.remove("active");
+      closeLoginErrorModal();
     }
   });
 });

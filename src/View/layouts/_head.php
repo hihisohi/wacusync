@@ -25,11 +25,14 @@
         $resetCssPath = '/assets/css/reset.css';
         $commonCssPath = '/assets/css/common.css';
         $layoutCssPath = '/assets/css/layout.css';
+        $tabBarCssPath = '/assets/css/components/tabBar/tabBar.css';
+        $flickingCssPath = '/assets/css/flicking.css';
     ?>
     <link rel="stylesheet" href="<?= $resetCssPath . getFileVersionParam($resetCssPath) ?>">
     <link rel="stylesheet" href="<?= $commonCssPath . getFileVersionParam($commonCssPath) ?>">
     <link rel="stylesheet" href="<?= $layoutCssPath . getFileVersionParam($layoutCssPath) ?>">
-
+    <link rel="stylesheet" href="<?= $tabBarCssPath . getFileVersionParam($tabBarCssPath) ?>">
+    <link rel="stylesheet" href="<?= $flickingCssPath . getFileVersionParam($flickingCssPath) ?>">
     <!-- 모듈별 CSS (있으면) -->
     <?php if (!empty($module)): ?>
     <?php
@@ -52,6 +55,15 @@
     <?php endif; ?>
     <?php endforeach; ?>
     <?php endif; ?>
+
+
+    <!-- lib : gsap -->
+    <script src="/assets/js/lib/gsap/gsap.min.js"></script>
+    <script src="/assets/js/lib/gsap/ScrollTrigger.min.js"></script>
+
+    <!-- lib : chartjs -->
+    <script src="/assets/js/lib/chartjs/chart.js"></script>
+    <script src="/assets/js/lib/chartjs/chartjs-adapter-date-fns.bundle.min.js"></script>
 
     <!-- 공통 JS -->
     <?php
@@ -87,5 +99,10 @@
 </head>
 
 <body>
+
+    <!-- START :: TAB BAR -->
+    <?php include __DIR__ . '/../components/tabBar/tabBar.php'; ?>
+    <!-- END :: TAB BAR -->
+
     <!-- START :: WRAP -->
     <div class="wrap">

@@ -34,42 +34,60 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $page = trim($uri, '/');         // '/dashboard' → 'dashboard'
 
 if ($page === '') {
-    $page = 'dashboard';
+    $page = 'home';
 }
 
 // 4. 라우트 정의 (페이지명 → 뷰 또는 콜러블)
 $routes = [
+    'home' => function() {
+        $title  = 'Home';
+        $module = 'home';
+        $view   = __DIR__ . '/../src/view/home/index.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
+    },
+
     'login' => function() {
         $title  = 'Login';
         $module = 'login';
-        $view   = __DIR__ . '/../src/View/auth/login.php';
-        include __DIR__ . '/../src/View/layouts/index.php';
+        $view   = __DIR__ . '/../src/view/auth/login.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
     },
     'find-id' => function() {
         $title  = 'Find ID';
         $module = 'find-id';
-        $view   = __DIR__ . '/../src/View/auth/find-id.php';
-        include __DIR__ . '/../src/View/layouts/index.php';
+        $view   = __DIR__ . '/../src/view/auth/find-id.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
     },
     'find-pw' => function() {
         $title  = 'Find PW';
         $module = 'find-pw';
-        $view   = __DIR__ . '/../src/View/auth/find-pw.php';
-        include __DIR__ . '/../src/View/layouts/index.php';
+        $view   = __DIR__ . '/../src/view/auth/find-pw.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
     },
     'dashboard' => function() {
         $title  = 'Dashboard';
         $module = 'dashboard';
-        $view   = __DIR__ . '/../src/View/dashboard/index.php';
-        include __DIR__ . '/../src/View/layouts/index.php';
+        $view   = __DIR__ . '/../src/view/dashboard/index.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
     },
     'stats'     => function() {
         $title  = 'Stats';
         $module = 'stats';
-        $view   = __DIR__ . '/../src/View/stats/index.php';
-        include __DIR__ . '/../src/View/layouts/index.php';
+        $view   = __DIR__ . '/../src/view/stats/index.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
     },
-    // 필요에 따라 다른 라우트 추가...
+    'mypage' => function() {
+        $title  = 'Mypage';
+        $module = 'mypage';
+        $view   = __DIR__ . '/../src/view/mypage/index.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
+    },
+    'settings' => function() {
+        $title  = 'Settings';
+        $module = 'settings';
+        $view   = __DIR__ . '/../src/view/settings/index.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
+    },
 ];
 
 // 5. 라우트 실행 또는 404

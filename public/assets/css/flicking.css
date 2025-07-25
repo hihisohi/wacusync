@@ -1,0 +1,41 @@
+.flick-wrapper {
+  display: flex;
+  width: 400%; /* 4개 섹션이므로 */
+  height: 100%;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* 수평 스와이프는 JavaScript가 처리하고, 수직 스크롤은 허용 */
+  touch-action: pan-y;
+}
+
+.flick-panel {
+  flex: 1;
+  width: 25%; /* 100% / 4 */
+  min-height: 100%;
+  /* 각 패널 내에서는 수직 스크롤 허용 */
+  overflow-y: auto;
+  /* 수평 스크롤은 숨김 */
+  overflow-x: hidden;
+  /* 웹킷 기반 브라우저에서 스크롤 최적화 */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 로딩 인디케이터 스타일 */
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #888;
+  font-size: 1.4rem;
+}
+
+/* 스크롤바 스타일링 (선택적) */
+.flick-panel::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* 전체 컨테이너에서 수평 스와이프는 방지하되 수직 스크롤은 허용 */
+.wrap {
+  touch-action: pan-y;
+}

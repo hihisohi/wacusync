@@ -1,0 +1,129 @@
+/* 모달 기본 스타일 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-dialog {
+  font-size: 16px;
+
+  width: 90%;
+  max-width: 16.25em;
+
+  background: var(--color-main-bg);
+  border-radius: 8px;
+}
+
+.modal-content {
+  width: 100%;
+}
+
+.modal-header {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+
+  padding: 1.625em 1em;
+  text-align: center;
+}
+
+.modal-header .btn--close {
+  position: absolute;
+  top: 50%;
+  left: 1em;
+  transform: translate(0, -50%);
+
+  width: 1em;
+  height: 1em;
+}
+
+.modal-body {
+  padding: 0.5em 2em 1.625em;
+}
+
+#setting-option-modal legend {
+  display: none;
+}
+
+#setting-option-modal .option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+#setting-option-modal .option-item {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
+
+  padding-left: 1.6em;
+}
+
+#setting-option-modal .option-list input[type="radio"] {
+  width: 1em;
+  height: 1em;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  opacity: 0;
+}
+
+#setting-option-modal .option-list input[type="radio"] + label {
+  position: relative;
+  cursor: pointer;
+
+  width: 100%;
+}
+
+#setting-option-modal .option-list input[type="radio"] + label:before {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+  left: -1.6em;
+  transform: translate(0, -50%) scale(1);
+
+  display: block;
+  background: transparent;
+  border-radius: 50%;
+  border: 1px solid #fff;
+
+  width: 1.1em;
+  height: 1.1em;
+
+  text-align: center;
+  vertical-align: top;
+
+  transition: all 0.3s;
+}
+
+#setting-option-modal .option-list input[type="radio"]:checked + label:before {
+  border-color: #3f8cff;
+  background: #3f8cff;
+  box-shadow: inset 0 0 0 2px #181928;
+}
+
+#setting-option-modal .option-list input[type="radio"]:active + label:before {
+  transform: translate(0, -50%) scale(0.8);
+}
+
+#setting-option-modal .option-list input[type="radio"]:focus + label:before {
+  outline: none;
+}
