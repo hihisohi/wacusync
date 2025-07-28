@@ -33,10 +33,11 @@
     <link rel="stylesheet" href="<?= $layoutCssPath . getFileVersionParam($layoutCssPath) ?>">
     <link rel="stylesheet" href="<?= $tabBarCssPath . getFileVersionParam($tabBarCssPath) ?>">
     <link rel="stylesheet" href="<?= $flickingCssPath . getFileVersionParam($flickingCssPath) ?>">
+
     <!-- 모듈별 CSS (있으면) -->
     <?php if (!empty($module)): ?>
     <?php
-        $moduleCssPath = "/assets/css/{$module}/{$module}.css";
+        $moduleCssPath = "/assets/css/view/{$module}/{$module}.css";
         $modulePublicPath = __DIR__ . "/../../../public" . $moduleCssPath;
         if (file_exists($modulePublicPath)):
     ?>
@@ -56,14 +57,19 @@
     <?php endforeach; ?>
     <?php endif; ?>
 
+    <!-- lib : axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- lib : gsap -->
     <script src="/assets/js/lib/gsap/gsap.min.js"></script>
     <script src="/assets/js/lib/gsap/ScrollTrigger.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script> -->
 
     <!-- lib : chartjs -->
     <script src="/assets/js/lib/chartjs/chart.js"></script>
     <script src="/assets/js/lib/chartjs/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script> -->
 
     <!-- 공통 JS -->
     <?php
@@ -77,7 +83,7 @@
     <!-- 모듈별 JS (있으면) -->
     <?php if (!empty($module)): ?>
     <?php
-        $moduleJsPath = "/assets/js/{$module}/{$module}.js";
+        $moduleJsPath = "/assets/js/view/{$module}/{$module}.js";
         $moduleJsPublicPath = __DIR__ . "/../../../public" . $moduleJsPath;
         if (file_exists($moduleJsPublicPath)):
     ?>

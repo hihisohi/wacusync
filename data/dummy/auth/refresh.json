@@ -1,0 +1,9 @@
+{
+  "result": "success",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0IiwiaWF0IjoxNjk5NTU5MTU1LCJleHAiOjE2OTk1NjI3NTV9.new_token_string",
+    "refreshToken": "new_refresh_token_example_string_67890",
+    "expiresIn": 3600,
+    "issuedAt": "2024-01-15T11:00:00Z"
+  }
+}

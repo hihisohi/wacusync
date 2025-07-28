@@ -1,0 +1,12 @@
+{
+  "result": "success",
+  "data": {
+    "id": "1234",
+    "username": "와커스싱크",
+    "email": "wacusync@gmail.com",
+    "role": "user",
+    "registeredAt": "2018-05-18T11:30:00Z",
+    "lastLoginAt": "2025-07-26T10:30:00Z",
+    "profileImage": null
+  }
+}

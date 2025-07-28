@@ -40,7 +40,7 @@ function renderComponent($name, $data = []) {
                         <input id="userPw" type="password" placeholder="영문, 숫자, 특수문자 조합 8자리 이상" required
                             autocomplete="off">
                         <button class="btn--clear" type="button">
-                            <span class="icon--clear"></span>
+                            <span class="icon icon--clear"></span>
                             <span class="blind">삭제</span>
                         </button>
                     </div>

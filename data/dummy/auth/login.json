@@ -1,0 +1,22 @@
+{
+  "result": "success",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0IiwiaWF0IjoxNjk5NTU1NTU1LCJleHAiOjE2OTk1NTkxNTV9.example_token_string",
+    "refreshToken": "refresh_token_example_string_12345",
+    "expiresIn": 3600,
+    "user": {
+      "id": "1234",
+      "username": "testuser",
+      "email": "test@example.com",
+      "name": "테스트 사용자",
+      "role": "user",
+      "lastLoginAt": "2024-01-15T10:30:00Z",
+      "profileImage": null,
+      "preferences": {
+        "language": "ko",
+        "theme": "light",
+        "notifications": true
+      }
+    }
+  }
+}

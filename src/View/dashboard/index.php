@@ -1,26 +1,4 @@
 <?php
-    function daysSince(string $dateString): int
-    {
-        // 포맷에 맞춰 날짜 생성
-        $date = DateTime::createFromFormat('Y.m.d', $dateString);
-        if (! $date) {
-            throw new Exception("잘못된 날짜 포맷: {$dateString}");
-        }
-
-        // 오늘 날짜(시분초 제거)
-        $today = new DateTime('today');
-
-        // 두 날짜 차이를 구하고, days 프로퍼티로 일수 리턴
-        $diff = $today->diff($date);
-        return $diff->days+1;
-    }
-
-    // API response : 유저정보 (더미)
-    $userInfo = json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/users.json"), true)[array_rand(json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/users.json"), true))];
-
-    // 오늘 기준 경과일
-    $elapsed = daysSince($userInfo["register_date"]);
-
     // API response : summary card (더미)
     // $dashboardSummary = json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/dashboardSummary.json"), true);
     $dashboardSummary = [
@@ -94,7 +72,6 @@
 
 ?>
 
-
 <div class="dashboard l-container">
     <div class="dashboard__header">
         <div class="dashboard__header-bg">
@@ -103,7 +80,7 @@
         <div class="l-inner">
             <div>
                 <div class="dashboard__header-title m-b-10">
-                    반갑습니다, <span class="username"><?php echo $userInfo["name"]; ?></span>님
+                    반갑습니다, <span class="username"></span>님
                 </div>
                 <p class="dashboard__header-subtitle">방문해주셔서 감사합니다.</p>
             </div>
@@ -112,11 +89,11 @@
                     <div class="flex-left">
                         <div class="dashboard__date-label">와커스와 함께한지</div>
                         <div class="dashboard__date-elapse roulette-box">
-                            <div class="elapse-days roulette-value"><?php echo $elapsed; ?></div>
+                            <div class="elapse-days roulette-value"></div>
                             <div class="elapse-days-unit roulette-unit">일</div>
                         </div>
                         <div class="dashboard__date-start">
-                            <span class="start-date"><?php echo $userInfo["register_date"]; ?> </span> ~
+                            <span class="start-date"></span> ~
                         </div>
                     </div>
                     <div class="flex-right">
@@ -146,38 +123,32 @@
                             <div class="card__title-text">오늘 예약 환자</div>
                             <div class="card__title-value-box">
                                 <div class="card__title-value-box-inner roulette-box">
-                                    <span
-                                        class="card__title-value roulette-value"><?php echo $dashboardSummary["todayPatient"]["value"]; ?></span>
+                                    <span class="card__title-value roulette-value"></span>
                                     <span class="card__title-value-unit roulette-unit">명</span>
                                 </div>
-                                <div class="card__title-rate"
-                                    data-rate="<?php echo $dashboardSummary["todayPatient"]["rate"] > 0 ? "increase" : "decrease"; ?>">
+                                <div class="card__title-rate" data-rate="">
                                     <div class="card__title-rate-value-outer">
-                                        <span
-                                            class="card__title-rate-value"><?php echo $dashboardSummary["todayPatient"]["rate"]; ?>
+                                        <span class="card__title-rate-value">
                                         </span>
                                         <span class="card__title-rate-value-unit">%</span>
                                     </div>
-                                    <span
-                                        class="icon icon--<?php echo $dashboardSummary["todayPatient"]["rate"] > 0 ? "increase" : "decrease"; ?>"></span>
+                                    <span class="icon"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="card__chart">
                             <canvas id="todayPatientChart"></canvas>
 
-                            <script>
+                            <!-- <script>
                             const todayPatientChartCanvas = document.getElementById('todayPatientChart');
 
                             const todayPatientChartData = {
                                 labels: <?php echo json_encode(array_keys($dashboardSummary["todayPatient"]["graph"])); ?>,
                                 datasets: [{
                                     label: '예약 환자 수',
-                                    backgroundColor: '<?php echo $dashboardSummary["todayPatient"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
-                                    borderColor: '<?php echo $dashboardSummary["todayPatient"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
-                                    fill: false,
+
                                     data: <?php echo json_encode(array_values($dashboardSummary["todayPatient"]["graph"])); ?>,
-                                    pointStyle: false,
+
                                 }, ]
                             };
 
@@ -190,6 +161,20 @@
                                 type: 'line',
                                 data: todayPatientChartData,
                                 options: {
+                                    backgroundColor: '<?php echo $dashboardSummary["todayPatient"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
+                                    borderColor: '<?php echo $dashboardSummary["todayPatient"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
+                                    fill: false,
+                                    pointStyle: ctx => {
+                                        const lastIndex = ctx.dataset.data.length - 1;
+                                        return ctx.dataIndex === lastIndex ?
+                                            'circle' :
+                                            false;
+                                    },
+                                    pointRadius: ctx => ctx.dataIndex === ctx.dataset.data.length - 1 ?
+                                        6 : 0,
+                                    pointBorderColor: "#ffffff",
+                                    pointBorderWidth: 1,
+
                                     animation: {
                                         x: {
                                             type: 'number',
@@ -262,7 +247,42 @@
                                 window.dashboardCharts = {};
                             }
                             window.dashboardCharts.todayPatient = todayPatientChart;
-                            </script>
+
+                            // requestAnimationFrame으로 부드러운 깜빡임 효과
+                            let startTime = 0;
+                            let animationRunning = false;
+
+                            function animateSmoothBlink(timestamp) {
+                                if (!startTime) startTime = timestamp;
+
+                                // 1초 주기로 계산 (1000ms)
+                                const elapsed = (timestamp - startTime) % 1400; // 1.4초 주기 (0.7초 페이드인 + 0.7초 페이드아웃)
+
+                                let opacity;
+                                if (elapsed < 700) {
+                                    // 첫 0.7초: 페이드 인 (0 → 1)
+                                    opacity = elapsed / 700;
+                                } else {
+                                    // 다음 0.7초: 페이드 아웃 (1 → 0)
+                                    opacity = 1 - ((elapsed - 700) / 700);
+                                }
+
+                                // 포인트 테두리 투명도 적용
+                                if (todayPatientChart.data.datasets[0]) {
+                                    todayPatientChart.data.datasets[0].pointBorderColor =
+                                        `rgba(255, 255, 255, ${opacity})`;
+                                    todayPatientChart.update('none');
+                                }
+
+                                if (animationRunning) {
+                                    requestAnimationFrame(animateSmoothBlink);
+                                }
+                            }
+
+                            // 애니메이션 시작
+                            animationRunning = true;
+                            requestAnimationFrame(animateSmoothBlink);
+                            </script> -->
                         </div>
                     </div>
 
@@ -272,87 +292,21 @@
                             <div class="card__title-text">홈페이지 방문자</div>
                             <div class="card__title-value-box">
                                 <div class="card__title-value-box-inner">
-                                    <span
-                                        class="card__title-value"><?php echo $dashboardSummary["websiteVisitor"]["value"]; ?></span>
+                                    <span class="card__title-value"></span>
                                     <span class="card__title-value-unit">명</span>
                                 </div>
-                                <div class="card__title-rate"
-                                    data-rate="<?php echo $dashboardSummary["websiteVisitor"]["rate"] > 0 ? "increase" : "decrease"; ?>">
+                                <div class="card__title-rate" data-rate="">
                                     <div class="card__title-rate-value-outer">
-                                        <span
-                                            class="card__title-rate-value"><?php echo $dashboardSummary["websiteVisitor"]["rate"]; ?>
+                                        <span class="card__title-rate-value">
                                         </span>
                                         <span class="card__title-rate-value-unit">%</span>
                                     </div>
-                                    <span
-                                        class="icon icon--<?php echo $dashboardSummary["websiteVisitor"]["rate"] > 0 ? "increase" : "decrease"; ?>"></span>
+                                    <span class="icon"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="card__chart">
                             <canvas id="websiteVisitorChart"></canvas>
-
-                            <!-- <script>
-                            const websiteVisitorChartCanvas = document.getElementById('websiteVisitorChart');
-
-                            const websiteVisitorChartData = {
-                                labels: <?php echo json_encode(array_keys($dashboardSummary["websiteVisitor"]["graph"])); ?>,
-                                datasets: [{
-                                    label: '예약 환자 수',
-                                    backgroundColor: '<?php echo $dashboardSummary["websiteVisitor"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
-                                    borderColor: '<?php echo $dashboardSummary["websiteVisitor"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
-                                    fill: false,
-                                    data: <?php echo json_encode(array_values($dashboardSummary["websiteVisitor"]["graph"])); ?>,
-                                    pointStyle: false,
-                                }, ]
-                            };
-
-                            const websiteVisitorChartConfig = {
-                                type: 'line',
-                                data: websiteVisitorChartData,
-                                options: {
-                                    borderJoinStyle: 'round',
-                                    plugins: {
-                                        title: {
-                                            text: '오늘 예약 환자',
-                                            display: false
-                                        },
-                                        legend: {
-                                            display: false
-                                        }
-                                    },
-                                    scales: {
-                                        x: {
-                                            display: false,
-                                            type: 'time',
-                                            time: {
-                                                // Luxon format string
-                                                tooltipFormat: 'DD T'
-                                            },
-                                            title: {
-                                                display: false,
-                                                text: '날짜'
-                                            }
-                                        },
-                                        y: {
-                                            display: false,
-                                            title: {
-                                                display: false,
-                                                text: '환자 수'
-                                            }
-                                        }
-                                    },
-                                },
-                            };
-
-                            const websiteVisitorChart = new Chart(websiteVisitorChartCanvas, websiteVisitorChartConfig);
-
-                            // 전역 차트 저장소가 없으면 생성
-                            if (!window.dashboardCharts) {
-                                window.dashboardCharts = {};
-                            }
-                            window.dashboardCharts.websiteVisitor = websiteVisitorChart;
-                            </script> -->
                         </div>
                     </div>
 
@@ -361,87 +315,21 @@
                             <div class="card__title-text">신규 환자</div>
                             <div class="card__title-value-box">
                                 <div class="card__title-value-box-inner">
-                                    <span
-                                        class="card__title-value"><?php echo $dashboardSummary["newPatient"]["value"]; ?></span>
+                                    <span class="card__title-value"></span>
                                     <span class="card__title-value-unit">명</span>
                                 </div>
-                                <div class="card__title-rate"
-                                    data-rate="<?php echo $dashboardSummary["newPatient"]["rate"] > 0 ? "increase" : "decrease"; ?>">
+                                <div class="card__title-rate" data-rate="">
                                     <div class="card__title-rate-value-outer">
-                                        <span
-                                            class="card__title-rate-value"><?php echo $dashboardSummary["newPatient"]["rate"]; ?>
+                                        <span class="card__title-rate-value">
                                         </span>
                                         <span class="card__title-rate-value-unit">%</span>
                                     </div>
-                                    <span
-                                        class="icon icon--<?php echo $dashboardSummary["newPatient"]["rate"] > 0 ? "increase" : "decrease"; ?>"></span>
+                                    <span class="icon"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="card__chart">
                             <canvas id="newPatientChart"></canvas>
-
-                            <script>
-                            const newPatientChartCanvas = document.getElementById('newPatientChart');
-
-                            const newPatientChartData = {
-                                labels: <?php echo json_encode(array_keys($dashboardSummary["newPatient"]["graph"])); ?>,
-                                datasets: [{
-                                    label: '예약 환자 수',
-                                    backgroundColor: '<?php echo $dashboardSummary["newPatient"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
-                                    borderColor: '<?php echo $dashboardSummary["newPatient"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
-                                    fill: false,
-                                    data: <?php echo json_encode(array_values($dashboardSummary["newPatient"]["graph"])); ?>,
-                                    pointStyle: false,
-                                }, ]
-                            };
-
-                            const newPatientChartConfig = {
-                                type: 'line',
-                                data: newPatientChartData,
-                                options: {
-                                    borderJoinStyle: 'round',
-                                    plugins: {
-                                        title: {
-                                            text: '오늘 예약 환자',
-                                            display: false
-                                        },
-                                        legend: {
-                                            display: false
-                                        }
-                                    },
-                                    scales: {
-                                        x: {
-                                            display: false,
-                                            type: 'time',
-                                            time: {
-                                                // Luxon format string
-                                                tooltipFormat: 'DD T'
-                                            },
-                                            title: {
-                                                display: false,
-                                                text: '날짜'
-                                            }
-                                        },
-                                        y: {
-                                            display: false,
-                                            title: {
-                                                display: false,
-                                                text: '환자 수'
-                                            }
-                                        }
-                                    },
-                                },
-                            };
-
-                            const newPatientChart = new Chart(newPatientChartCanvas, newPatientChartConfig);
-
-                            // 전역 차트 저장소가 없으면 생성
-                            if (!window.dashboardCharts) {
-                                window.dashboardCharts = {};
-                            }
-                            window.dashboardCharts.newPatient = newPatientChart;
-                            </script>
                         </div>
                     </div>
 
@@ -451,87 +339,21 @@
                             <div class="card__title-text">미방문 비율</div>
                             <div class="card__title-value-box">
                                 <div class="card__title-value-box-inner">
-                                    <span
-                                        class="card__title-value"><?php echo $dashboardSummary["noShowRate"]["value"]; ?></span>
+                                    <span class="card__title-value"></span>
                                     <span class="card__title-value-unit">%</span>
                                 </div>
-                                <div class="card__title-rate"
-                                    data-rate="<?php echo $dashboardSummary["noShowRate"]["rate"] > 0 ? "increase" : "decrease"; ?>">
+                                <div class="card__title-rate" data-rate="">
                                     <div class="card__title-rate-value-outer">
-                                        <span
-                                            class="card__title-rate-value"><?php echo $dashboardSummary["noShowRate"]["rate"]; ?>
+                                        <span class="card__title-rate-value">
                                         </span>
                                         <span class="card__title-rate-value-unit">%</span>
                                     </div>
-                                    <span
-                                        class="icon icon--<?php echo $dashboardSummary["noShowRate"]["rate"] > 0 ? "increase" : "decrease"; ?>"></span>
+                                    <span class="icon"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="card__chart">
                             <canvas id="noShowRateChart"></canvas>
-
-                            <script>
-                            const noShowRateChartCanvas = document.getElementById('noShowRateChart');
-
-                            const noShowRateChartData = {
-                                labels: <?php echo json_encode(array_keys($dashboardSummary["noShowRate"]["graph"])); ?>,
-                                datasets: [{
-                                    label: '예약 환자 수',
-                                    backgroundColor: '<?php echo $dashboardSummary["noShowRate"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
-                                    borderColor: '<?php echo $dashboardSummary["noShowRate"]["rate"] > 0 ? "#05BA7B" : "#FB3636"; ?>',
-                                    fill: false,
-                                    data: <?php echo json_encode(array_values($dashboardSummary["noShowRate"]["graph"])); ?>,
-                                    pointStyle: false,
-                                }, ]
-                            };
-
-                            const noShowRateChartConfig = {
-                                type: 'line',
-                                data: noShowRateChartData,
-                                options: {
-                                    borderJoinStyle: 'round',
-                                    plugins: {
-                                        title: {
-                                            text: '오늘 예약 환자',
-                                            display: false
-                                        },
-                                        legend: {
-                                            display: false
-                                        }
-                                    },
-                                    scales: {
-                                        x: {
-                                            display: false,
-                                            type: 'time',
-                                            time: {
-                                                // Luxon format string
-                                                tooltipFormat: 'DD T'
-                                            },
-                                            title: {
-                                                display: false,
-                                                text: '날짜'
-                                            }
-                                        },
-                                        y: {
-                                            display: false,
-                                            title: {
-                                                display: false,
-                                                text: '환자 수'
-                                            }
-                                        }
-                                    },
-                                },
-                            };
-
-                            const noShowRateChart = new Chart(noShowRateChartCanvas, noShowRateChartConfig);
-
-                            // 전역 차트 저장소가 없으면 생성
-                            if (!window.dashboardCharts) {
-                                window.dashboardCharts = {};
-                            }
-                            window.dashboardCharts.noShowRate = noShowRateChart;
-                            </script>
                         </div>
                     </div>
                 </div>
@@ -563,136 +385,6 @@
                                 <canvas id="inflowChart"></canvas>
                             </div>
                             <div id="inflowChartLegend" class="doughnut-chart-legend"></div>
-                            <!-- 
-                            <script>
-                            const inflowChartCanvas = document.getElementById('inflowChart');
-
-                            const inflowChartDataResponse =
-                                <?php echo json_encode(json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/dashboardInflow.json"), true)); ?>;
-                            const inflowChartData = {
-                                labels: Object.keys(inflowChartDataResponse),
-                                datasets: [{
-                                    label: '예약 환자 유입 경로',
-                                    data: Object.values(inflowChartDataResponse),
-                                }]
-                            };
-
-                            const doughnutChartColors = ['#926DFF', '#7FE47E', '#FF718B', '#FFC544', '#4587FF'];
-
-                            const inflowChartConfig = {
-                                type: 'doughnut',
-                                data: inflowChartData,
-                                options: {
-                                    cutout: '65%',
-                                    responsive: true,
-                                    backgroundColor: doughnutChartColors,
-                                    borderRadius: 10,
-                                    borderWidth: 0,
-                                    plugins: {
-                                        legend: {
-                                            display: false
-                                        },
-                                        tooltip: {
-                                            enabled: false
-                                        }
-                                    },
-                                    onHover: (evt, items) => {
-                                        evt.native.target.style.cursor = items.length ? 'pointer' : '';
-                                    }
-                                },
-                                plugins: [customTooltip(), renderInflowChartLegend('#inflowChartLegend')]
-                            };
-
-                            const inflowChart = new Chart(inflowChartCanvas, inflowChartConfig);
-
-                            // 전역 차트 저장소가 없으면 생성
-                            if (!window.dashboardCharts) {
-                                window.dashboardCharts = {};
-                            }
-                            window.dashboardCharts.inflow = inflowChart;
-
-
-
-                            function renderInflowChartLegend(containerSelector) {
-                                return {
-                                    id: 'inflowChartLegend',
-                                    afterUpdate(inflowChart) {
-                                        const container = document.querySelector(containerSelector);
-                                        container.innerHTML = ''; // 초기화
-
-                                        inflowChart.data.labels.forEach((label, i) => {
-                                            const color = doughnutChartColors[i];
-                                            const value = inflowChart.data.datasets[0].data[i];
-
-                                            // ● + 텍스트 + 값 구조
-                                            const item = document.createElement('div');
-                                            item.className = 'legend__item';
-                                            item.innerHTML = `
-                                            <div class="legend__item-label">
-                                                <span class="label__color" style="background:${color}"></span>
-                                                <span class="label__text">${label}</span>
-                                            </div>
-                                            <div class="legend__item-value">
-                                                <span class="value__text">${value}</span>
-                                            </div>
-                                            `;
-                                            // 클릭 시 해당 데이터셋 토글 기능 (선택 사항)
-                                            item.onclick = () => {
-                                                inflowChart.toggleDataVisibility(i);
-                                                inflowChart.update();
-                                            };
-                                            container.appendChild(item);
-                                        });
-                                    }
-                                };
-                            }
-
-                            function customTooltip() {
-                                return {
-                                    id: 'customTooltip',
-                                    afterDraw(inflowChart) {
-                                        const tooltipEl = getOrCreateTooltip(inflowChart);
-                                        const tooltipModel = inflowChart.tooltip;
-
-                                        // 보이지 않을 땐 숨기기
-                                        if (tooltipModel.opacity === 0) {
-                                            tooltipEl.style.opacity = 0;
-                                            return;
-                                        }
-
-                                        // 텍스트 세팅
-                                        const dataIndex = tooltipModel.dataPoints[0].dataIndex;
-                                        const value = inflowChart.data.datasets[0].data[dataIndex];
-                                        tooltipEl.innerHTML = `<div class="tooltip-box">${value}건</div>`;
-
-                                        // 위치 계산
-                                        const {
-                                            canvas
-                                        } = inflowChart;
-                                        const position = canvas.getBoundingClientRect();
-                                        const caret = tooltipModel.caretY || 0;
-
-                                        tooltipEl.style.opacity = 1;
-                                        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel
-                                            .caretX + 'px';
-                                        tooltipEl.style.top = position.top + window.pageYOffset + caret - tooltipEl
-                                            .offsetHeight - 10 + 'px';
-                                    }
-                                };
-                            }
-
-                            function getOrCreateTooltip(chart) {
-                                let el = document.getElementById('chartjs-tooltip');
-                                if (!el) {
-                                    el = document.createElement('div');
-                                    el.id = 'chartjs-tooltip';
-                                    el.style.position = 'absolute';
-                                    el.style.pointerEvents = 'none';
-                                    document.body.appendChild(el);
-                                }
-                                return el;
-                            }
-                            </script> -->
                         </div>
                     </div>
                 </div>
@@ -712,7 +404,7 @@
                             const revisitingRateChartCanvas = document.getElementById('revisitingRateChart');
 
                             const revisitingRateChartDataResponse =
-                                <?php echo json_encode(json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/dashboardRevisitingRate.json"), true)); ?>;
+                                <?php echo json_encode(json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/dashboard/revisitingRate.json"), true)); ?>;
 
                             // 막대 차트용 색상 배열
                             const barChartColors = ['#4587FF', '#7FE47E'];
@@ -831,6 +523,7 @@ import {
 } from '/assets/js/components/chart/chartUtils.js';
 import DoughnutChart from '/assets/js/components/chart/doughnutChart.js';
 import BarChart from '/assets/js/components/chart/barChart.js';
+import LineChart from '/assets/js/components/chart/lineChart.js';
 
 
 // 차트 인스턴스들을 저장할 객체
@@ -848,7 +541,9 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 async function initializeCharts() {
 
-    const inflowData = await fetch('/data/dummy/dashboardInflow.json')
+
+
+    const inflowData = await fetch('/data/dummy/dashboard/inflow.json')
         .then(response => response.json())
         .then(data => {
             return data;
@@ -975,177 +670,6 @@ function updateInflowChart(period) {
 }
 </script>
 
-
-
-<!-- <script>
-// 기간 설정에 따른 summary card 데이터 업데이트 함수
-function updateSummaryCardData(period) {
-    switch (period) {
-        case 'daily':
-            console.log('일별 데이터로 업데이트');
-            // 일별 데이터 api 호출
-
-            break;
-        case 'weekly':
-            console.log('주간 데이터로 업데이트');
-            // 주간 데이터 api 호출
-
-            break;
-        case 'monthly':
-            console.log('월간 데이터로 업데이트');
-            // 월간 데이터 api 호출
-
-            break;
-        case 'yearly':
-            console.log('연간 데이터로 업데이트');
-            // 연간 데이터 api 호출
-
-            break;
-        default:
-            console.log('기본 데이터로 업데이트');
-    }
-
-    // API response : 기간별 업데이트 데이터 (더미)
-    const data = {
-        todayPatient: {
-            value: Math.floor(Math.random() * 101), // 0–100
-            rate: Math.floor(Math.random() * 41) - 20, // -20–20
-            graph: {
-                "2025-07-01": Math.floor(Math.random() * 101),
-                "2025-07-02": Math.floor(Math.random() * 101),
-                "2025-07-03": Math.floor(Math.random() * 101),
-                "2025-07-04": Math.floor(Math.random() * 101),
-                "2025-07-05": Math.floor(Math.random() * 101),
-                "2025-07-06": Math.floor(Math.random() * 101),
-                "2025-07-07": Math.floor(Math.random() * 101),
-                "2025-07-08": Math.floor(Math.random() * 101),
-                "2025-07-09": Math.floor(Math.random() * 101),
-                "2025-07-10": Math.floor(Math.random() * 101),
-            }
-        },
-        websiteVisitor: {
-            value: Math.floor(Math.random() * 5001), // 0–5000
-            rate: Math.floor(Math.random() * 201) - 100, // -100–100
-            graph: {
-                "2025-07-01": Math.floor(Math.random() * 5001),
-                "2025-07-02": Math.floor(Math.random() * 5001),
-                "2025-07-03": Math.floor(Math.random() * 5001),
-                "2025-07-04": Math.floor(Math.random() * 5001),
-                "2025-07-05": Math.floor(Math.random() * 5001),
-                "2025-07-06": Math.floor(Math.random() * 5001),
-                "2025-07-07": Math.floor(Math.random() * 5001),
-                "2025-07-08": Math.floor(Math.random() * 5001),
-                "2025-07-09": Math.floor(Math.random() * 5001),
-                "2025-07-10": Math.floor(Math.random() * 5001),
-            }
-        },
-        newPatient: {
-            value: Math.floor(Math.random() * 61), // 0–60
-            rate: Math.floor(Math.random() * 201) - 100, // -100–100
-            graph: {
-                "2025-07-01": Math.floor(Math.random() * 101),
-                "2025-07-02": Math.floor(Math.random() * 101),
-                "2025-07-03": Math.floor(Math.random() * 101),
-                "2025-07-04": Math.floor(Math.random() * 101),
-                "2025-07-05": Math.floor(Math.random() * 101),
-                "2025-07-06": Math.floor(Math.random() * 101),
-                "2025-07-07": Math.floor(Math.random() * 101),
-                "2025-07-08": Math.floor(Math.random() * 101),
-                "2025-07-09": Math.floor(Math.random() * 101),
-                "2025-07-10": Math.floor(Math.random() * 101),
-            }
-        },
-        noShowRate: {
-            value: Math.round((Math.random() * 1000) / 10 * 10) / 10, // 0.0–100.0
-            rate: Math.floor(Math.random() * 201) - 100, // -100–100
-            graph: {
-                "2025-07-01": Math.floor(Math.random() * 101),
-                "2025-07-02": Math.floor(Math.random() * 101),
-                "2025-07-03": Math.floor(Math.random() * 101),
-                "2025-07-04": Math.floor(Math.random() * 101),
-                "2025-07-05": Math.floor(Math.random() * 101),
-                "2025-07-06": Math.floor(Math.random() * 101),
-                "2025-07-07": Math.floor(Math.random() * 101),
-                "2025-07-08": Math.floor(Math.random() * 101),
-                "2025-07-09": Math.floor(Math.random() * 101),
-                "2025-07-10": Math.floor(Math.random() * 101),
-            }
-        }
-    };
-
-    updateCard('todayPatient', data.todayPatient);
-    updateCard('websiteVisitor', data.websiteVisitor);
-    updateCard('newPatient', data.newPatient);
-    updateCard('noShowRate', data.noShowRate);
-
-    const charts = window.dashboardCharts;
-
-    if (charts.todayPatient) updateChart(charts.todayPatient, data.todayPatient);
-    if (charts.websiteVisitor) updateChart(charts.websiteVisitor, data.websiteVisitor);
-    if (charts.newPatient) updateChart(charts.newPatient, data.newPatient);
-    if (charts.noShowRate) updateChart(charts.noShowRate, data.noShowRate);
-}
-
-
-
-function updateCard(cardType, cardData) {
-    // 카드 요소들 찾기
-    const card = document.querySelector(`[data-card-type="${cardType}"]`);
-
-    // 값 업데이트
-    const valueElement = card.querySelector('.card__title-value');
-    if (valueElement) {
-        valueElement.textContent = cardData.value
-    }
-
-    // 증감률 업데이트
-    const rateElement = card.querySelector('.card__title-rate');
-    const rateValueElement = card.querySelector('.card__title-rate-value');
-    const rateIconElement = card.querySelector('.icon');
-
-    if (rateElement && rateValueElement && rateIconElement) {
-        const isIncrease = cardData.rate > 0;
-        const rateType = isIncrease ? 'increase' : 'decrease';
-
-        // 증감률 값 업데이트
-        rateValueElement.textContent = `${cardData.rate}`;
-
-        // 증감률 스타일 업데이트
-        rateElement.setAttribute('data-rate', rateType);
-
-        // 아이콘 클래스 업데이트
-        rateIconElement.className = `icon icon--${rateType}`;
-    }
-}
-
-function updateChart(chart, data) {
-    if (!chart) return;
-
-    // 실제 구현 시 여기에 해당 기간의 새로운 데이터를 가져와서 차트 업데이트
-    console.log(`Chart ${chart.canvas.id}를 ${data} 데이터로 업데이트`);
-
-    // chart.data.datasets[0].data = newData;
-    // chart.data.labels = newLabels;
-
-    // 차트 다시 그리기
-    chart.data.datasets[0].data = [
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-    ];
-    chart.data.datasets[0].backgroundColor = data.rate > 0 ? "#05BA7B" : "#FB3636";
-    chart.data.datasets[0].borderColor = data.rate > 0 ? "#05BA7B" : "#FB3636";
-
-    chart.update();
-}
-</script> -->
 
 <style>
 #chartjs-tooltip .tooltip-box {

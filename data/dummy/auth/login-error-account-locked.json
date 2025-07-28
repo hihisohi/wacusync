@@ -1,0 +1,10 @@
+{
+  "result": "error",
+  "code": "ACCOUNT_LOCKED",
+  "details": {
+    "reason": "연속된 로그인 실패로 인해 계정이 잠겼습니다.",
+    "lockedUntil": "2024-01-15T11:30:00Z",
+    "remainingTime": "30분",
+    "contact": "관리자에게 문의하거나 잠시 후 다시 시도해주세요."
+  }
+}

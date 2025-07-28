@@ -1,0 +1,61 @@
+/**
+ * 에러 코드 상수 정의
+ */
+export const ERROR_CODES = {
+  // 인증 관련 에러
+  AUTH: {
+    NOT_FOUND_USER: "NOT_FOUND_USER",
+    INVALID_PASSWORD: "INVALID_PASSWORD",
+    ACCOUNT_LOCKED: "ACCOUNT_LOCKED",
+    TOKEN_EXPIRED: "TOKEN_EXPIRED",
+    UNAUTHORIZED: "UNAUTHORIZED",
+  },
+
+  // 네트워크 관련 에러
+  NETWORK: {
+    NETWORK_ERROR: "NETWORK_ERROR",
+    TIMEOUT: "TIMEOUT",
+    CONNECTION_FAILED: "CONNECTION_FAILED",
+  },
+
+  // 유효성 검사 에러
+  VALIDATION: {
+    EMPTY_FIELD: "EMPTY_FIELD",
+    EMPTY_ID_FIELD: "EMPTY_ID_FIELD",
+    EMPTY_PASSWORD_FIELD: "EMPTY_PASSWORD_FIELD",
+    INVALID_EMAIL_FORMAT: "INVALID_EMAIL_FORMAT",
+    INVALID_PASSWORD_FORMAT: "INVALID_PASSWORD_FORMAT",
+    PASSWORD_TOO_SHORT: "PASSWORD_TOO_SHORT",
+    UNKNOWN_ERROR: "UNKNOWN_ERROR",
+  },
+};
+
+/**
+ * 에러 메시지 정의
+ */
+export const ERROR_MESSAGES = {
+  [ERROR_CODES.AUTH.DEFAULT]: "로그인 중 오류가 발생했습니다.",
+  [ERROR_CODES.AUTH.NOT_FOUND_USER]:
+    "가입된 정보가 아니에요!\n다시 한번 확인해주세요.",
+  [ERROR_CODES.AUTH.INVALID_PASSWORD]:
+    "가입된 정보가 아니에요!\n다시 한번 확인해주세요.",
+  [ERROR_CODES.AUTH.ACCOUNT_LOCKED]:
+    "계정이 잠겨있습니다.\n관리자에게 문의하세요.",
+  [ERROR_CODES.AUTH.TOKEN_EXPIRED]: "토큰이 만료되었습니다.",
+  [ERROR_CODES.AUTH.UNAUTHORIZED]: "권한이 없습니다.",
+
+  [ERROR_CODES.NETWORK.NETWORK_ERROR]: "네트워크 오류가 발생했습니다.",
+  [ERROR_CODES.NETWORK.TIMEOUT]: "요청 시간이 초과되었습니다.",
+  [ERROR_CODES.NETWORK.CONNECTION_FAILED]: "연결에 실패했습니다.",
+
+  [ERROR_CODES.VALIDATION.EMPTY_FIELD]: "로그인 정보를 입력해주세요.",
+  [ERROR_CODES.VALIDATION.EMPTY_ID_FIELD]: "이메일을 입력해주세요.",
+  [ERROR_CODES.VALIDATION.EMPTY_PASSWORD_FIELD]: "비밀번호를 입력해주세요.",
+  [ERROR_CODES.VALIDATION.INVALID_EMAIL_FORMAT]:
+    "올바른 이메일 형식이 아닙니다.",
+  [ERROR_CODES.VALIDATION.INVALID_PASSWORD_FORMAT]:
+    "비밀번호는 영문, 숫자, 특수문자가 모두 포함되어야 합니다.",
+  [ERROR_CODES.VALIDATION.PASSWORD_TOO_SHORT]:
+    "비밀번호는 8자리 이상이어야 합니다.",
+  [ERROR_CODES.VALIDATION.UNKNOWN_ERROR]: "알 수 없는 오류가 발생했습니다.",
+};
