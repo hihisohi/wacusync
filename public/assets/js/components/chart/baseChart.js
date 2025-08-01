@@ -14,9 +14,7 @@ export default class BaseChart {
     this.canvasId = canvasId;
     this.ctx = document.getElementById(canvasId)?.getContext("2d");
     if (!this.ctx) {
-      console.error(
-        `[BaseChart] Error: Canvas with id "${canvasId}" not found.`
-      );
+      console.error(`[BaseChart] Error: Canvas with id "${canvasId}" not found.`);
       return;
     }
 

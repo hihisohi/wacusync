@@ -107,7 +107,13 @@
 <body>
 
     <!-- START :: TAB BAR -->
+    <?php 
+    // tabBar를 숨길 모듈 리스트
+    $hideTabBarModules = ['login', 'find-id', 'find-pw', 'notification'];
+    if (!in_array($module ?? '', $hideTabBarModules)): 
+    ?>
     <?php include __DIR__ . '/../components/tabBar/tabBar.php'; ?>
+    <?php endif; ?>
     <!-- END :: TAB BAR -->
 
     <!-- START :: WRAP -->

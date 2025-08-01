@@ -15,7 +15,7 @@ export default class DoughnutChart extends BaseChart {
     this.tooltipId = "chartjs-tooltip";
 
     // 도넛 차트 전용 색상 (BaseChart의 기본 색상을 오버라이드)
-    this.colors = ["#926DFF", "#7FE47E", "#FF718B", "#FFC544", "#4587FF"];
+    this.colors = ["#4587FF", "#FF718B", "#FFC544", "#7FE47E", "#926DFF"];
 
     // 도넛 차트 전용 플러그인 등록
     this.plugins.push(this.createCustomTooltipPlugin());
@@ -35,10 +35,7 @@ export default class DoughnutChart extends BaseChart {
    */
   renderChart() {
     // key-value 형태의 데이터를 Chart.js 형식으로 변환
-    const chartData = this.convertKeyValueData(
-      this.data,
-      this.options.label || ""
-    );
+    const chartData = this.convertKeyValueData(this.data, this.options.label || "");
 
     // 도넛 차트 전용 기본 옵션
     const doughnutDefaultOptions = {
@@ -48,7 +45,12 @@ export default class DoughnutChart extends BaseChart {
       borderRadius: 10,
       borderWidth: 0,
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: false,
+          onClick: () => {
+            // 아무 동작도 하지 않음
+          },
+        },
         tooltip: { enabled: false }, // 커스텀 툴팁을 사용하므로 기본 툴팁은 비활성화
       },
       onHover: (evt, items) => {
@@ -61,6 +63,52 @@ export default class DoughnutChart extends BaseChart {
 
     // 부모의 render 메소드 호출
     super.render("doughnut", doughnutDefaultOptions);
+  }
+
+  /**
+   * 커스텀 범례 플러그인 생성
+   * @returns {Object} Chart.js 플러그인 객체
+   */
+  createCustomLegendPlugin() {
+    if (!this.legendContainerId) return null;
+
+    return {
+      id: "customLegend",
+      afterUpdate: (chart) => {
+        const container = document.querySelector(this.legendContainerId);
+        if (!container) return;
+
+        container.innerHTML = ""; // 초기화
+
+        chart.data.labels.forEach((label, i) => {
+          const color = this.colors[i];
+          const value = chart.data.datasets[0].data[i];
+
+          const rate = (value / chart.data.datasets[0].data.reduce((acc, curr) => acc + curr, 0)) * 100;
+
+          // 범례 아이템 생성
+          const item = document.createElement("div");
+          item.className = "legend__item";
+          item.innerHTML = `
+                <div class="legend__item-label">
+                    <span class="label__color" style="background:${color}"></span>
+                    <span class="label__text">${label}</span>
+                </div>
+                <div class="legend__item-value">
+                    <span class="value__text">${rate.toFixed(2)}%</span>
+                </div>
+              `;
+
+          // 클릭 시 해당 데이터셋 토글 기능
+          item.onclick = () => {
+            // chart.toggleDataVisibility(i);
+            // chart.update();
+          };
+
+          container.appendChild(item);
+        });
+      },
+    };
   }
 
   /**
@@ -105,59 +153,8 @@ export default class DoughnutChart extends BaseChart {
         const caretY = tooltipModel.caretY || 0;
 
         tooltipEl.style.opacity = 1;
-        tooltipEl.style.left =
-          position.left + window.pageXOffset + tooltipModel.caretX + "px";
-        tooltipEl.style.top =
-          position.top +
-          window.pageYOffset +
-          caretY -
-          tooltipEl.offsetHeight -
-          10 +
-          "px";
-      },
-    };
-  }
-
-  /**
-   * 커스텀 범례 플러그인 생성
-   * @returns {Object} Chart.js 플러그인 객체
-   */
-  createCustomLegendPlugin() {
-    if (!this.legendContainerId) return null;
-
-    return {
-      id: "customLegend",
-      afterUpdate: (chart) => {
-        const container = document.querySelector(this.legendContainerId);
-        if (!container) return;
-
-        container.innerHTML = ""; // 초기화
-
-        chart.data.labels.forEach((label, i) => {
-          const color = this.colors[i];
-          const value = chart.data.datasets[0].data[i];
-
-          // 범례 아이템 생성
-          const item = document.createElement("div");
-          item.className = "legend__item";
-          item.innerHTML = `
-            <div class="legend__item-label">
-                <span class="label__color" style="background:${color}"></span>
-                <span class="label__text">${label}</span>
-            </div>
-            <div class="legend__item-value">
-                <span class="value__text">${value}</span>
-            </div>
-          `;
-
-          // 클릭 시 해당 데이터셋 토글 기능
-          item.onclick = () => {
-            chart.toggleDataVisibility(i);
-            chart.update();
-          };
-
-          container.appendChild(item);
-        });
+        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + "px";
+        tooltipEl.style.top = position.top + window.pageYOffset + caretY - tooltipEl.offsetHeight - 10 + "px";
       },
     };
   }
@@ -197,11 +194,6 @@ export default class DoughnutChart extends BaseChart {
  * @param {string} label - 데이터셋 라벨
  * @returns {DoughnutChart} 도넛 차트 인스턴스
  */
-export function createDoughnutChart(
-  canvasId,
-  data,
-  legendContainerId = null,
-  label = ""
-) {
+export function createDoughnutChart(canvasId, data, legendContainerId = null, label = "") {
   return new DoughnutChart(canvasId, data, { label }, legendContainerId);
 }

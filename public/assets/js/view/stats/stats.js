@@ -1,75 +1,104 @@
-// 통계 분석 관련 JavaScript
-console.log("Stats JS loaded!");
+import { statsAPI } from "../../api/statsApi.js";
+import chartManager from "../../components/chart/chartManager.js";
+import DoughnutChart from "../../components/chart/doughnutChart.js";
+import BarChart from "../../components/chart/barChart.js";
 
-// 통계 초기화 함수
-function initStats() {
-  console.log("Stats initialized!");
+document.addEventListener("DOMContentLoaded", function () {
+  const statsCharts = {};
 
-  // 통계 특화 로직
-  const charts = document.querySelectorAll(
-    '.flick-panel[data-section="stats"] div[style*="linear-gradient"]'
-  );
-  console.log("Found stats charts:", charts.length);
+  initStatsDemographics(statsCharts);
+  initStatsSales(statsCharts);
+  initStatsKeyword(statsCharts);
+});
 
-  charts.forEach((chart, index) => {
-    chart.addEventListener("click", () => {
-      console.log(`Stats chart ${index + 1} clicked!`);
+async function initStatsDemographics(statsCharts) {
+  const response = await statsAPI.getDemographics();
 
-      // 차트 클릭 효과
-      chart.style.transform = "scale(1.05)";
-      setTimeout(() => {
-        chart.style.transform = "scale(1)";
-      }, 200);
-    });
+  if (response.success) {
+    const demographicsData = response.data;
 
-    // 호버 효과
-    chart.addEventListener("mouseenter", () => {
-      chart.style.opacity = "0.7";
-      chart.style.transition = "all 0.2s ease";
-    });
-
-    chart.addEventListener("mouseleave", () => {
-      chart.style.opacity = "0.3";
-    });
-  });
-
-  // 통계 특화 기능들
-  initStatsFeatures();
+    statsCharts.age = new DoughnutChart("ageChart", demographicsData.age.graph, {}, "#ageChartLegend");
+    statsCharts.gender = new DoughnutChart("genderChart", demographicsData.gender.graph, {}, "#genderChartLegend");
+  } else {
+    console.error("demographics 에러 컴포넌트 show");
+    return;
+  }
 }
 
-// 통계 특화 기능
-function initStatsFeatures() {
-  console.log("Initializing stats features...");
+async function initStatsSales(statsCharts) {
+  const response = await statsAPI.getSales();
 
-  // 예시: 차트 데이터 업데이트
-  setInterval(() => {
-    updateStatsCharts();
-  }, 45000); // 45초마다 업데이트
+  if (response.success) {
+    const salesData = response.data;
+
+    const formattedChartData = window.chartManager.formatChartData(salesData.graph, "bar");
+
+    console.log(formattedChartData);
+
+    statsCharts.sales = new BarChart("salesChart", formattedChartData, {
+      indexAxis: "y",
+      elements: {
+        bar: {
+          borderRadius: 4,
+          borderWidth: 20,
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          enabled: false, // 툴팁 비활성화
+        },
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          max: Math.max(...Object.values(salesData.graph)),
+          ticks: {
+            stepSize: Math.max(...Object.values(salesData.graph)) / 4,
+          },
+          grid: {
+            tickBorderDash: [5, 5],
+            tickBorderDashOffset: 5,
+            color: "#E5E5EF",
+            offset: true,
+            lineWidth: 1.5,
+          },
+        },
+        y: { grid: { display: false } }, // X축 그리드는 숨김 예시
+      },
+    });
+  } else {
+    console.error("sales 에러 컴포넌트 show");
+    return;
+  }
 }
 
-// 통계 차트 업데이트
-function updateStatsCharts() {
-  const currentSection = document.querySelector(
-    '.flick-panel[data-section="stats"]'
-  );
-  if (!currentSection || !currentSection.innerHTML.includes("통계")) return;
+async function initStatsKeyword(statsCharts) {
+  const response = await statsAPI.getKeyword();
 
-  console.log("Updating stats charts...");
+  if (response.success) {
+    const keywordData = response.data;
 
-  // 차트 애니메이션 예시
-  const charts = currentSection.querySelectorAll(
-    'div[style*="linear-gradient"]'
-  );
-  charts.forEach((chart) => {
-    chart.style.opacity = "0.1";
-    setTimeout(() => {
-      chart.style.opacity = "0.3";
-    }, 300);
-  });
-}
+    statsCharts.keyword = new DoughnutChart("keywordChart", keywordData.platform.graph, {}, "#keywordChartLegend");
 
-// 전역으로 노출
-if (typeof window !== "undefined") {
-  window.initStats = initStats;
-  window.updateStatsCharts = updateStatsCharts;
+    const keywordTable = document.getElementById("keywordTable");
+
+    const keywordTotalCount = Object.values(keywordData.keyword.graph).reduce((acc, curr) => acc + curr, 0);
+
+    const keywordTableItems = Object.entries(keywordData.keyword.graph).map(([keyword, value]) => {
+      return `
+          <div class="card__table-item">
+            <div class="card__table-item-title">${keyword}</div>
+            <div class="card__table-item-value">${((value / keywordTotalCount) * 100).toFixed(2)}%</div>
+          </div>
+      `;
+    });
+
+    keywordTable.innerHTML = keywordTableItems.join("");
+  } else {
+    console.error("keyword 에러 컴포넌트 show");
+    return;
+  }
 }

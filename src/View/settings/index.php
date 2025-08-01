@@ -15,16 +15,15 @@ function renderComponent($name, $data = []) {
 }
 ?>
 
-<div class="stats l-container">
+<div class="settings l-container">
     <div class="l-title-box">
         <div class="l-inner">
             <div class="l-title">시스템 설정</div>
         </div>
-
     </div>
     <div class="l-gap-box"></div>
 
-    <div class="stats__content">
+    <div class="settings__content">
         <div class="l-grid settings-grid">
             <div class="l-grid__item">
                 <div class="list">
@@ -132,9 +131,5 @@ function renderComponent($name, $data = []) {
 </div>
 
 <?php
-    renderComponent('modal/settingOptionModal', [
-        'id' => 'setting-option-modal',
-        'title' => '설정 옵션',
-        'body' => '<div class="modal-body__content">설정 옵션</div>',
-    ]);
+    renderComponent('modal/settingOptionModal');
 ?>

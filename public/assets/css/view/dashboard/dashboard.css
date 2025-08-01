@@ -146,6 +146,18 @@
   height: 40px;
 }
 
+.card__title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card__period {
+  display: flex;
+  font-size: 0.44em;
+  gap: 0.25em;
+}
+
 .card--summary {
   display: flex;
   align-items: center;
@@ -159,12 +171,13 @@
 
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 
   font-size: 1em;
 }
 
 .card--summary .card__title-text {
-  font-size: 0.46em;
+  font-size: 0.467em;
   font-weight: 500;
 }
 
@@ -177,11 +190,9 @@
 .card--summary .card__title-value-box-inner {
   display: flex;
   gap: 0.1em;
-}
 
-.card--summary .card__title-value {
-  font-size: 1em;
-  font-weight: 500;
+  font-size: 0.867em;
+  font-weight: 600;
 }
 
 .card--summary .card__title-rate {
@@ -190,7 +201,7 @@
   align-items: center;
   gap: 4px;
 
-  font-size: 0.34em;
+  font-size: 0.44em;
   font-weight: 500;
 }
 
@@ -200,8 +211,8 @@
 }
 
 .card--summary .card__title-rate .icon {
-  width: 0.9em;
-  height: 0.9em;
+  width: 0.6em;
+  height: 0.6em;
 }
 
 .card--summary .card__title-rate[data-rate="increase"] {
@@ -214,7 +225,7 @@
 
 .card--summary .card__chart {
   width: 50%;
-  min-width: 160px;
+  /* min-width: 160px; */
   height: 3em;
 }
 

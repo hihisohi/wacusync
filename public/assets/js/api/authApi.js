@@ -8,13 +8,13 @@ const authInstance = axios.create({
 
 authInstance.interceptors.request.use(
   function (config) {
-    console.log("요청이 전달되기 전 작업 수행");
+    console.log("auth : 요청이 전달되기 전 작업 수행");
 
     // 요청이 전달되기 전에 작업 수행
     return config;
   },
   function (error) {
-    console.log("요청 오류가 있는 작업 수행");
+    console.log("auth : 요청 오류가 있는 작업 수행");
 
     // 요청 오류가 있는 작업 수행
     return Promise.reject(error);
@@ -23,14 +23,14 @@ authInstance.interceptors.request.use(
 
 authInstance.interceptors.response.use(
   function (response) {
-    console.log("정상응답 인터셉트");
+    console.log("auth : 정상응답 인터셉트");
 
     // 2xx 범위에 있는 상태 코드는 이 함수를 트리거 합니다.
     // 응답 데이터가 있는 작업 수행
     return response;
   },
   function (error) {
-    console.log("에러 인터셉트");
+    console.log("auth : 에러 인터셉트");
 
     // 2xx 외의 범위에 있는 상태 코드는 이 함수를 트리거 합니다.
     // 응답 오류가 있는 작업 수행

@@ -40,52 +40,58 @@ if ($page === '') {
 // 4. 라우트 정의 (페이지명 → 뷰 또는 콜러블)
 $routes = [
     'home' => function() {
-        $title  = 'Home';
+        $title  = '와커스CRM';
         $module = 'home';
         $view   = __DIR__ . '/../src/view/home/index.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
 
     'login' => function() {
-        $title  = 'Login';
+        $title  = '로그인 | 와커스CRM';
         $module = 'login';
         $view   = __DIR__ . '/../src/view/auth/login.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
     'find-id' => function() {
-        $title  = 'Find ID';
+        $title  = '아이디 찾기 | 와커스CRM';
         $module = 'find-id';
         $view   = __DIR__ . '/../src/view/auth/find-id.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
     'find-pw' => function() {
-        $title  = 'Find PW';
+        $title  = '비밀번호 찾기 | 와커스CRM';
         $module = 'find-pw';
         $view   = __DIR__ . '/../src/view/auth/find-pw.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
     'dashboard' => function() {
-        $title  = 'Dashboard';
+        $title  = '대시보드 | 와커스CRM';
         $module = 'dashboard';
         $view   = __DIR__ . '/../src/view/dashboard/index.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
     'stats'     => function() {
-        $title  = 'Stats';
+        $title  = '통계분석 | 와커스CRM';
         $module = 'stats';
         $view   = __DIR__ . '/../src/view/stats/index.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
     'mypage' => function() {
-        $title  = 'Mypage';
+        $title  = '마이페이지 | 와커스CRM';
         $module = 'mypage';
         $view   = __DIR__ . '/../src/view/mypage/index.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
     'settings' => function() {
-        $title  = 'Settings';
+        $title  = '설정 | 와커스CRM';
         $module = 'settings';
         $view   = __DIR__ . '/../src/view/settings/index.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
+    },
+    'notification' => function() {
+        $title  = '알림 | 와커스CRM';
+        $module = 'notification';
+        $view   = __DIR__ . '/../src/view/notification/index.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
 ];

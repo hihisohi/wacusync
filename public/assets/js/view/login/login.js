@@ -1,8 +1,5 @@
-import {
-  ERROR_CODES,
-  ERROR_MESSAGES,
-} from "../../../../../config/constants/errors.js";
-import { authAPI } from "../../api/auth.js";
+import { ERROR_CODES, ERROR_MESSAGES } from "../../../../../config/constants/errors.js";
+import { authAPI } from "../../api/authApi.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.querySelector("#loginForm");
@@ -29,9 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 아이디 input 값 변경 시 폼 유효성 체크
   inputUserId.addEventListener("input", (e) => {
-    const clearBtn = e.target
-      .closest(".input-item")
-      .querySelector(".btn--clear");
+    const clearBtn = e.target.closest(".input-item").querySelector(".btn--clear");
 
     if (e.target.value !== "") {
       clearBtn.style.display = "block";
@@ -47,9 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 비밀번호 input 값 변경 시 폼 유효성 체크
   inputUserPw.addEventListener("input", (e) => {
-    const clearBtn = e.target
-      .closest(".input-item")
-      .querySelector(".btn--clear");
+    const clearBtn = e.target.closest(".input-item").querySelector(".btn--clear");
 
     if (e.target.value !== "") {
       clearBtn.style.display = "block";
@@ -87,21 +80,20 @@ document.addEventListener("DOMContentLoaded", function () {
     // 로그인 결과에 따른 처리
     if (response.success) {
       console.log("로그인 성공");
-      console.log("login api 호출 응답 : " + response.data.token);
 
+      // 토큰 저장
       localStorage.setItem("token", response.data.token);
 
+      // 대시보드 페이지로 이동
       window.location.href = "/dashboard";
     } else {
       console.log("로그인 실패");
-      console.log("login api 호출 응답 : " + response.errorCode);
 
       const errorCode = response.errorCode;
       const errorDetails = response.details;
 
       // 로그인 에러 코드에 해당하는 메시지 가져오기
-      const errorMessage =
-        ERROR_MESSAGES[errorCode] || ERROR_MESSAGES[ERROR_CODES.AUTH.DEFAULT];
+      const errorMessage = ERROR_MESSAGES[errorCode] || ERROR_MESSAGES[ERROR_CODES.AUTH.DEFAULT];
 
       // 로그인 오류 모달 실행
       window.ModalAPI.openLoginErrorModal(errorMessage);
@@ -142,16 +134,13 @@ document.addEventListener("DOMContentLoaded", function () {
    */
   function validateField(inputElement, validationFunction, fieldName) {
     const value = inputElement.value;
-    const errorElement = document.querySelector(
-      `[data-input-error="${fieldName}"]`
-    );
+    const errorElement = document.querySelector(`[data-input-error="${fieldName}"]`);
     const validationResult = validationFunction(value);
 
     if (validationResult !== null) {
       // 유효성 검사 실패 - 에러 상태로 변경
       errorElement.textContent =
-        ERROR_MESSAGES[validationResult] ||
-        ERROR_MESSAGES[ERROR_CODES.VALIDATION.UNKNOWN_ERROR];
+        ERROR_MESSAGES[validationResult] || ERROR_MESSAGES[ERROR_CODES.VALIDATION.UNKNOWN_ERROR];
       inputElement.focus();
       inputElement.classList.add("error");
 
@@ -167,9 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  let baseHeight = window.visualViewport
-    ? window.visualViewport.height
-    : window.innerHeight;
+  let baseHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
   /**
    * 키보드 상태 변경 시 버튼 위치 업데이트
@@ -320,9 +307,7 @@ function resetValidateField(inputElements) {
   inputElements.forEach((inputElement) => {
     inputElement.classList.remove("error");
 
-    const errorElement = document.querySelector(
-      `[data-input-error="${inputElement.id}"]`
-    );
+    const errorElement = document.querySelector(`[data-input-error="${inputElement.id}"]`);
 
     if (errorElement) {
       errorElement.textContent = "";

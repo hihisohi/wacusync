@@ -46,10 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const settingKey = btn.dataset.setting;
 
-      window.ModalAPI.openSettingOptionModal(
-        settingKey,
-        settingOptions[settingKey]
-      );
+      window.ModalAPI.openSettingOptionModal(settingKey, settingOptions[settingKey]);
     });
   });
 });

@@ -1,8 +1,8 @@
-<div id="setting-option-modal" class="modal">
+<div id="password-change-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="btn--close" data-action="closeSettingOptionModal">
+                <button type="button" class="btn--close" data-action="closePasswordChangeModal">
                     <span class="icon icon--go-back">
                         <span class="blind">뒤로가기</span>
                     </span>

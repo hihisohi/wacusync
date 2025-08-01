@@ -7,12 +7,13 @@ export default class ChartManager {
     this.charts = {}; // 생성된 차트들을 저장하는 전역 저장소
     this.defaultColors = {
       doughnut: ["#926DFF", "#7FE47E", "#FF718B", "#FFC544", "#4587FF"],
-      bar: ["#4587FF", "#7FE47E"],
+      bar: ["#4587FF", "#926DFF", "#FFC544", "#7FE47E", "#FF718B"],
       line: {
         positive: "#05BA7B",
         negative: "#FB3636",
         default: "#4587FF",
       },
+      default: "#9291A5",
     };
   }
 
@@ -128,7 +129,7 @@ export default class ChartManager {
       };
     }
 
-    if (type === "line" || type === "bar") {
+    if (type === "line") {
       const isMultiDataset = Array.isArray(rawData);
 
       if (isMultiDataset) {
@@ -138,10 +139,8 @@ export default class ChartManager {
           datasets: rawData.map((item, index) => ({
             label: item.label,
             data: Object.values(item.graph),
-            backgroundColor:
-              this.defaultColors.bar[index] || this.defaultColors.line.default,
-            borderColor:
-              this.defaultColors.bar[index] || this.defaultColors.line.default,
+            backgroundColor: this.defaultColors.line.default,
+            borderColor: this.defaultColors.line.default,
             borderWidth: type === "line" ? 2 : 0,
             borderRadius: type === "bar" ? 8 : 0,
           })),
@@ -156,8 +155,61 @@ export default class ChartManager {
               data: Object.values(rawData.graph || rawData),
               backgroundColor: this.defaultColors.line.default,
               borderColor: this.defaultColors.line.default,
-              borderWidth: type === "line" ? 2 : 0,
-              fill: type === "line" ? false : true,
+              borderWidth: 2,
+              fill: false,
+            },
+          ],
+        };
+      }
+    }
+
+    if (type === "bar") {
+      const isMultiDataset = Array.isArray(rawData);
+
+      if (isMultiDataset) {
+        // 여러 데이터셋 (재방문률 차트 등)
+        return {
+          labels: Object.keys(rawData[0].graph),
+          datasets: rawData.map((item, index) => ({
+            label: item.label,
+            data: Object.values(item.graph),
+            backgroundColor: this.defaultColors.bar[index],
+            borderColor: this.defaultColors.bar[index],
+            borderWidth: 0,
+            borderRadius: 8,
+          })),
+        };
+      } else {
+        // 단일 데이터셋
+        const dataValues = Object.values(rawData.graph || rawData);
+        const dataCount = dataValues.length;
+
+        // 6번째 이후 데이터는 회색으로 처리
+        let backgroundColors = [];
+        let borderColors = [];
+
+        for (let i = 0; i < dataCount; i++) {
+          if (i < this.defaultColors.bar.length) {
+            // 정의된 색상 사용 (1-5번째)
+            backgroundColors.push(this.defaultColors.bar[i]);
+            borderColors.push(this.defaultColors.bar[i]);
+          } else {
+            // 6번째 이후는 회색
+            backgroundColors.push("#9CA3AF"); // 회색
+            borderColors.push("#9CA3AF");
+          }
+        }
+
+        return {
+          labels: Object.keys(rawData.graph || rawData),
+          datasets: [
+            {
+              label: label,
+              data: Object.values(rawData.graph || rawData),
+              backgroundColor: backgroundColors,
+              borderColor: borderColors,
+              borderWidth: 0,
+              fill: false,
             },
           ],
         };
@@ -225,8 +277,7 @@ export default class ChartManager {
 
     // 추가 업데이트 적용
     if (additionalUpdates.backgroundColor) {
-      chart.data.datasets[0].backgroundColor =
-        additionalUpdates.backgroundColor;
+      chart.data.datasets[0].backgroundColor = additionalUpdates.backgroundColor;
     }
     if (additionalUpdates.borderColor) {
       chart.data.datasets[0].borderColor = additionalUpdates.borderColor;

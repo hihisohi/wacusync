@@ -1,173 +1,44 @@
 <?php
-
+// 해당 뷰에서 필요한 컴포넌트의 CSS/JS 파일을 배열로 등록
+$cssFiles = [
+    '/assets/css/components/chart/doughnutChart.css',
+];
+  
 ?>
 
-
-<!-- chart.js 스크립트 -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js">
-</script>
-
 <div class="stats l-container">
-    <div class="l-inner">
-        <div class="l-title-box m-b-30">
+    <div class="l-title-box">
+        <div class="l-inner">
             <div class="l-title">통계 분석</div>
+            <div class="notification-bell">
+                <a href="/notification" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 32 36" fill="none">
+                    <path d="M7.71362 24C7.15566 24 6.64133 23.7225 6.35456 23.267C6.00232 22.6998 6.11454 21.9728 6.6164 21.5294L8.03468 20.2805V15.2368C8.0378 11.3816 11.3638 8 15.1511 8C18.9383 8 22.2643 11.3816 22.2643 15.2368V20.2805L23.6826 21.5294C24.1876 21.9728 24.2967 22.7029 23.9444 23.267C23.6608 23.7195 23.1433 24 22.5854 24H7.71362Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19.1468 24C19.1468 26.211 17.3567 28 15.1483 28C12.94 28 11.1499 26.2079 11.1499 24H19.1499H19.1468Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="26.5" cy="7.5" r="1.5" fill="#4587FF"/>
+                </svg>
+                </a>
+            </div>
         </div>
+    </div>
 
-
+    <div class="l-inner p-t-0">
         <div class="stats__content">
             <div class="l-grid g-20 stats-grid">
 
                 <!-- 인구통계학적 분석 -->
                 <div class="l-grid__item">
-                    <div class="card card--age">
+                    <div class="card card--demographics">
                         <div class="card__title m-b-20">
                             <div class="card__title-text">인구통계학적 분석</div>
                         </div>
+                        
                         <!-- 연령대 별 -->
                         <div class="card__chart doughnut-chart m-b-30">
                             <div class="chart-container">
                                 <canvas id="ageChart"></canvas>
                             </div>
                             <div id="ageChartLegend" class="doughnut-chart-legend"></div>
-
-                            <script>
-                            const ageChartCanvas = document.getElementById('ageChart');
-
-                            const ageChartDataResponse =
-                                <?php echo json_encode(json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/statsDemographics.json"), true)); ?>;
-
-                            const ageChartData = {
-                                labels: Object.keys(ageChartDataResponse.age),
-                                datasets: [{
-                                    label: '인구통계학적 분석',
-                                    data: Object.values(ageChartDataResponse.age),
-                                }]
-                            };
-
-                            const doughnutChartColors = ['#FFC544', '#7FE47E', '#FF718B', '#4587FF'];
-
-                            const ageChartConfig = {
-                                type: 'doughnut',
-                                data: ageChartData,
-                                options: {
-                                    cutout: '65%',
-                                    responsive: true,
-                                    backgroundColor: doughnutChartColors,
-                                    borderRadius: 10,
-                                    borderWidth: 0,
-                                    plugins: {
-                                        legend: {
-                                            display: false
-                                        },
-                                        tooltip: {
-                                            enabled: false
-                                        }
-                                    },
-                                    onHover: (evt, items) => {
-                                        evt.native.target.style.cursor = items.length ? 'pointer' : '';
-                                    }
-                                },
-                                plugins: [customTooltip(), renderageChartLegend('#ageChartLegend')]
-                            };
-
-                            const ageChart = new Chart(ageChartCanvas, ageChartConfig);
-
-                            // 전역 차트 저장소가 없으면 생성
-                            if (!window.statsCharts) {
-                                window.statsCharts = {};
-                            }
-                            window.statsCharts.age = ageChart;
-
-
-                            function renderageChartLegend(containerSelector) {
-                                return {
-                                    id: 'ageChartLegend',
-                                    afterUpdate(ageChart) {
-                                        const container = document.querySelector(containerSelector);
-                                        container.innerHTML = ''; // 초기화
-
-                                        ageChart.data.labels.forEach((label, i) => {
-                                            const color = doughnutChartColors[i];
-                                            const value = ageChart.data.datasets[0].data[i];
-
-                                            // ● + 텍스트 + 값 구조
-                                            const item = document.createElement('div');
-                                            item.className = 'legend__item';
-                                            item.innerHTML = `
-                                            <div class="legend__item-label">
-                                                <span class="label__color" style="background:${color}"></span>
-                                                <span class="label__text">${label}</span>
-                                            </div>
-                                            <div class="legend__item-value">
-                                                <span class="value__text">${value}</span>
-                                            </div>
-                                            `;
-                                            // 클릭 시 해당 데이터셋 토글 기능 (선택 사항)
-                                            item.onclick = () => {
-                                                ageChart.toggleDataVisibility(i);
-                                                ageChart.update();
-                                            };
-                                            container.appendChild(item);
-                                        });
-                                    }
-                                };
-                            }
-
-                            function customTooltip() {
-                                return {
-                                    id: 'customTooltip',
-                                    afterDraw(ageChart) {
-                                        const tooltipEl = getOrCreateTooltip(ageChart);
-                                        const tooltipModel = ageChart.tooltip;
-
-                                        // 보이지 않을 땐 숨기기
-                                        if (tooltipModel.opacity === 0) {
-                                            tooltipEl.style.opacity = 0;
-                                            return;
-                                        }
-
-                                        // 텍스트 세팅
-                                        const dataIndex = tooltipModel.dataPoints[0].dataIndex;
-                                        const value = ageChart.data.datasets[0].data[dataIndex];
-                                        tooltipEl.innerHTML = `<div class="tooltip-box">${value}건</div>`;
-
-                                        // 위치 계산
-                                        const {
-                                            canvas
-                                        } = ageChart;
-                                        const position = canvas.getBoundingClientRect();
-                                        const caret = tooltipModel.caretY || 0;
-
-                                        tooltipEl.style.opacity = 1;
-                                        tooltipEl.style.left =
-                                            position.left +
-                                            window.pageXOffset +
-                                            tooltipModel.caretX +
-                                            "px";
-                                        tooltipEl.style.top =
-                                            position.top +
-                                            window.pageYOffset +
-                                            caret -
-                                            tooltipEl.offsetHeight -
-                                            10 +
-                                            "px";
-                                    }
-                                };
-                            }
-
-                            function getOrCreateTooltip(chart) {
-                                let el = document.getElementById('chartjs-tooltip');
-                                if (!el) {
-                                    el = document.createElement('div');
-                                    el.id = 'chartjs-tooltip';
-                                    el.style.position = 'absolute';
-                                    el.style.pointerEvents = 'none';
-                                    document.body.appendChild(el);
-                                }
-                                return el;
-                            }
-                            </script>
                         </div>
 
                         <!-- 성별 별 -->
@@ -176,245 +47,44 @@
                                 <canvas id="genderChart"></canvas>
                             </div>
                             <div id="genderChartLegend" class="doughnut-chart-legend"></div>
-
-                            <script>
-                            const genderChartCanvas = document.getElementById('genderChart');
-
-                            const genderChartDataResponse =
-                                <?php echo json_encode(json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/statsDemographics.json"), true)); ?>;
-
-                            const genderChartData = {
-                                labels: Object.keys(genderChartDataResponse.gender),
-                                datasets: [{
-                                    label: '인구통계학적 분석',
-                                    data: Object.values(genderChartDataResponse.gender),
-                                }]
-                            };
-
-                            const doughnutChartColors2 = ['#4587FF', '#FF718B'];
-
-                            const genderChartConfig = {
-                                type: 'doughnut',
-                                data: genderChartData,
-                                options: {
-                                    cutout: '65%',
-                                    responsive: true,
-                                    backgroundColor: doughnutChartColors2,
-                                    borderRadius: 10,
-                                    borderWidth: 0,
-                                    plugins: {
-                                        legend: {
-                                            display: false
-                                        },
-                                        tooltip: {
-                                            enabled: false
-                                        }
-                                    },
-                                    onHover: (evt, items) => {
-                                        evt.native.target.style.cursor = items.length ? 'pointer' : '';
-                                    }
-                                },
-                                plugins: [customTooltip(), rendergenderChartLegend('#genderChartLegend')]
-                            };
-
-                            const genderChart = new Chart(genderChartCanvas, genderChartConfig);
-
-                            // 전역 차트 저장소가 없으면 생성
-                            if (!window.statsCharts) {
-                                window.statsCharts = {};
-                            }
-                            window.statsCharts.age = genderChart;
-
-
-                            function rendergenderChartLegend(containerSelector) {
-                                return {
-                                    id: 'genderChartLegend',
-                                    afterUpdate(genderChart) {
-                                        const container = document.querySelector(containerSelector);
-                                        container.innerHTML = ''; // 초기화
-
-                                        genderChart.data.labels.forEach((label, i) => {
-                                            const color = doughnutChartColors2[i];
-                                            const value = genderChart.data.datasets[0].data[i];
-
-                                            // ● + 텍스트 + 값 구조
-                                            const item = document.createElement('div');
-                                            item.className = 'legend__item';
-                                            item.innerHTML = `
-                                            <div class="legend__item-label">
-                                                <span class="label__color" style="background:${color}"></span>
-                                                <span class="label__text">${label}</span>
-                                            </div>
-                                            <div class="legend__item-value">
-                                                <span class="value__text">${value}</span>
-                                            </div>
-                                            `;
-                                            // 클릭 시 해당 데이터셋 토글 기능 (선택 사항)
-                                            item.onclick = () => {
-                                                genderChart.toggleDataVisibility(i);
-                                                genderChart.update();
-                                            };
-                                            container.appendChild(item);
-                                        });
-                                    }
-                                };
-                            }
-
-                            function customTooltip() {
-                                return {
-                                    id: 'customTooltip',
-                                    afterDraw(genderChart) {
-                                        const tooltipEl = getOrCreateTooltip(genderChart);
-                                        const tooltipModel = genderChart.tooltip;
-
-                                        // 보이지 않을 땐 숨기기
-                                        if (tooltipModel.opacity === 0) {
-                                            tooltipEl.style.opacity = 0;
-                                            return;
-                                        }
-
-                                        // 텍스트 세팅
-                                        const dataIndex = tooltipModel.dataPoints[0].dataIndex;
-                                        const value = genderChart.data.datasets[0].data[dataIndex];
-                                        tooltipEl.innerHTML = `<div class="tooltip-box">${value}건</div>`;
-
-                                        // 위치 계산
-                                        const {
-                                            canvas
-                                        } = genderChart;
-                                        const position = canvas.getBoundingClientRect();
-                                        const caret = tooltipModel.caretY || 0;
-
-                                        tooltipEl.style.opacity = 1;
-                                        tooltipEl.style.left =
-                                            position.left +
-                                            window.pageXOffset +
-                                            tooltipModel.caretX +
-                                            "px";
-                                        tooltipEl.style.top =
-                                            position.top +
-                                            window.pageYOffset +
-                                            caret -
-                                            tooltipEl.offsetHeight -
-                                            10 +
-                                            "px";
-                                    }
-                                };
-                            }
-
-                            function getOrCreateTooltip(chart) {
-                                let el = document.getElementById('chartjs-tooltip');
-                                if (!el) {
-                                    el = document.createElement('div');
-                                    el.id = 'chartjs-tooltip';
-                                    el.style.position = 'absolute';
-                                    el.style.pointerEvents = 'none';
-                                    document.body.appendChild(el);
-                                }
-                                return el;
-                            }
-                            </script>
                         </div>
                     </div>
                 </div>
 
                 <!-- 진료과별 매출 분석 -->
                 <div class="l-grid__item">
-                    <div class="card card--inflow">
+                    <div class="card card--sales">
                         <div class="card__title m-b-20">
                             <div class="card__title-text">진료과별 매출 분석</div>
                         </div>
                         <div class="card__chart">
                             <div class="chart-container">
-                                <canvas id="subjectChart"></canvas>
+                                <canvas id="salesChart"></canvas>
                             </div>
+                        </div>
+                    </div>
+                </div>
 
-                            <script>
-                            const subjectChartCanvas = document.getElementById('subjectChart');
-
-                            const subjectChartDataResponse =
-                                <?php echo json_encode(json_decode(file_get_contents(__DIR__ . "/../../../data/dummy/statsSubject.json"), true)); ?>;
-
-                            const subjectChartData = {
-                                labels: Object.keys(subjectChartDataResponse),
-                                datasets: [{
-                                    label: '매출 (단위: 건)',
-                                    data: Object.values(subjectChartDataResponse),
-                                    backgroundColor: '#4587FF',
-                                    borderColor: '#4587FF',
-                                    borderWidth: 0,
-                                    borderRadius: 8,
-                                }]
-                            };
-
-                            const subjectChartConfig = {
-                                type: 'bar',
-                                data: subjectChartData,
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: {
-                                        title: {
-                                            display: false,
-                                            text: '진료과별 매출 분석'
-                                        },
-                                        legend: {
-                                            display: false
-                                        },
-                                        tooltip: {
-                                            callbacks: {
-                                                label: function(context) {
-                                                    return context.parsed.y + '건';
-                                                }
-                                            }
-                                        }
-                                    },
-                                    scales: {
-                                        x: {
-                                            beginAtZero: true,
-                                            ticks: {
-                                                color: '#615E83',
-                                                font: {
-                                                    size: 12
-                                                }
-                                            },
-                                            grid: {
-                                                display: false
-                                            }
-                                        },
-                                        y: {
-                                            beginAtZero: true,
-                                            ticks: {
-                                                color: '#615E83',
-                                                font: {
-                                                    size: 12
-                                                },
-                                                callback: function(value) {
-                                                    return value + '건';
-                                                }
-                                            },
-                                            grid: {
-                                                color: '#E5E5EF',
-                                            }
-                                        }
-                                    }
-                                },
-                            };
-
-                            const subjectChart = new Chart(subjectChartCanvas, subjectChartConfig);
-
-                            // 전역 차트 저장소가 없으면 생성
-                            if (!window.statsCharts) {
-                                window.statsCharts = {};
-                            }
-                            window.statsCharts.subject = subjectChart;
-                            </script>
+                <!-- 홈페이지 유입 키워드 분석 -->
+                <div class="l-grid__item">
+                    <div class="card card--keyword">
+                        <div class="card__title m-b-20">
+                            <div class="card__title-text">홈페이지 유입 키워드 분석</div>
+                        </div>
+                        <div class="card__chart doughnut-chart m-b-20">
+                            <div class="chart-container">
+                                <canvas id="keywordChart"></canvas>
+                            </div>
+                            <div id="keywordChartLegend" class="doughnut-chart-legend"></div>
+                        </div>
+                        <div class="card__table" id="keywordTable">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <script>
