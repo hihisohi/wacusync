@@ -1,7 +1,7 @@
 .login__form {
   display: flex;
   flex-direction: column;
-  gap: 45px;
+  gap: 30px;
 }
 
 .login__form .form-row {
@@ -66,6 +66,63 @@
 .login__form .form-row input[type="text"]::placeholder,
 .login__form .form-row input[type="password"]::placeholder {
   color: #737373;
+}
+
+.login__form .form-row .checkbox-item {
+  position: relative;
+
+  display: block;
+  padding-left: 2em;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.login__form .form-row .checkbox-item label {
+  font-size: 16px;
+  color: #fff;
+}
+
+.login__form .form-row .checkbox-item input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-item .checkbox-mark {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(0, -50%);
+
+  width: 1.2em;
+  height: 1.2em;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.checkbox-item input:checked ~ .checkbox-mark {
+  background-color: #4587ff;
+}
+
+.checkbox-item input:checked ~ .checkbox-mark:after {
+  display: block;
+}
+
+.checkbox-item .checkbox-mark:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-45%, -45%);
+
+  width: 70%;
+  height: 70%;
+  background: url("/assets/images/common/icon/checkbox-mark.svg") no-repeat center center / contain;
+
+  display: none;
 }
 
 .login__form .error-message {

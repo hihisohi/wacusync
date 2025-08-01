@@ -6,40 +6,43 @@ $cssFiles = [
   
 ?>
 
-<div class="dashboard l-container">
-    <div class="dashboard__header">
+<div class="page page-dashboard">
+    <div class="page__header page-dashboard__header">
         <div class="dashboard__header-bg">
             <div class="dashboard__header-bg-inner"></div>
         </div>
-        <div class="l-inner">
-            <div>
+
+        <div class="dashboard__header-content">
+            <div class="container">
                 <div class="dashboard__header-title m-b-10">
                     반갑습니다, <span class="username"></span>님
                 </div>
                 <p class="dashboard__header-subtitle">방문해주셔서 감사합니다.</p>
-            </div>
-            <div class="dashboard__date-box" data-fade="up">
-                <div class="flex-container">
-                    <div class="flex-left">
-                        <div class="dashboard__date-label">와커스와 함께한지</div>
-                        <div class="dashboard__date-elapse roulette-box">
-                            <div class="elapse-days roulette-value"></div>
-                            <div class="elapse-days-unit roulette-unit">일</div>
-                        </div>
-                        <div class="dashboard__date-start">
-                            <span class="start-date"></span> ~
-                        </div>
-                    </div>
-                    <div class="flex-right">
-                        <a href="/mypage" class="btn dashboard__link">
-                            <div class="icon icon--go-link">
-                                <span class="blind">마이페이지로 이동</span>
+
+                <div class="dashboard__header-date-box" data-fade="up">
+                    <div class="flex-container">
+                        <div class="flex-left">
+                            <div class="dashboard__header-date-label">와커스와 함께한지</div>
+                            <div class="dashboard__header-date-elapse roulette-box">
+                                <div class="elapse-days roulette-value"></div>
+                                <div class="elapse-days-unit roulette-unit">일</div>
                             </div>
-                        </a>
+                            <div class="dashboard__header-date-start">
+                                <span class="start-date"></span> ~
+                            </div>
+                        </div>
+                        <div class="flex-right">
+                            <a href="/mypage" class="btn dashboard__link">
+                                <div class="icon icon--go-link">
+                                    <span class="blind">마이페이지로 이동</span>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="notification-bell">
             <a href="/notification" class="btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 32 36" fill="none">
@@ -51,16 +54,15 @@ $cssFiles = [
         </div>
     </div>
 
-    <div class="l-inner">
-        <div class="dashboard__content">
+
+    <div class="page__content">
+        <div class="container">
             <div class="l-grid g-20 dashboard-grid">
+
+                <div class="page__title">대시보드</div>
 
                 <!-- 요약 차트 -->
                 <div class="l-grid__item g-10 dashboard-grid__item m-b-20" data-fade-trigger>
-                    <div class="l-title-box m-b-10">
-                        <div class="l-title">대시보드</div>
-                    </div>
-
                     <div class="card card--summary" data-card-type="todayPatient" data-fade="right">
                         <div class="card__title">
                             <div class="card__title-text">오늘 예약 환자</div>
@@ -155,12 +157,11 @@ $cssFiles = [
                         </div>
                     </div>
                 </div>
+ 
+                <div class="page__subtitle">세부차트를 확인해보세요</div>
 
                 <!-- 환자 유입 경로 -->
                 <div class="l-grid__item">
-                    <div class="l-title-box m-b-10">
-                        <div class="l-title sm">세부차트를 확인해보세요</div>
-                    </div>
                     <div class="card card--inflow" data-fade="right">
                         <div class="card__title m-b-4">
                             <div class="card__title-text">환자 유입 경로</div>
@@ -223,7 +224,6 @@ $cssFiles = [
                         </div>
                     </div>
                 </div>
-
 
                 <!-- 미방문(No-show) 비율 추이 -->
                 <div class="l-grid__item">
@@ -296,6 +296,7 @@ $cssFiles = [
             </div>
         </div>
     </div>
+
 </div>
 
 

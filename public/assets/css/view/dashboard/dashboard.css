@@ -1,5 +1,6 @@
-.dashboard__header {
+.page-dashboard__header {
   position: relative;
+  margin-bottom: 30px;
 }
 
 .dashboard__header-bg {
@@ -38,7 +39,7 @@
   animation: scaleUp 0.8s forwards;
 }
 
-.dashboard__header .l-inner {
+.dashboard__header-content {
   position: relative;
   z-index: 2;
 
@@ -76,29 +77,31 @@
 
 .dashboard__header-subtitle {
   font-size: 14px;
+
+  margin-bottom: 30px;
 }
 
-.dashboard__date-box {
+.dashboard__header-date-box {
   padding: 18px 20px;
   border-radius: 20px;
   background: #fff;
 }
 
-.dashboard__date-box .flex-container {
+.dashboard__header-date-box .flex-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
 }
 
-.dashboard__date-label {
+.dashboard__header-date-label {
   font-size: 14px;
   color: #615e83;
 
   margin-bottom: 0.5em;
 }
 
-.dashboard__date-elapse {
+.dashboard__header-date-elapse {
   display: flex;
   align-items: flex-end;
 
@@ -110,7 +113,7 @@
   margin-bottom: 0.5em;
 }
 
-.dashboard__date-elapse .elapse-days {
+.dashboard__header-date-elapse .elapse-days {
   font-size: 30px;
   font-weight: 800;
   height: 1em;
@@ -118,7 +121,7 @@
   display: flex;
 }
 
-.dashboard__date-elapse .elapse-days > div {
+.dashboard__header-date-elapse .elapse-days > div {
   width: fit-content;
   max-width: 0.7em;
   height: 1em;
@@ -126,16 +129,16 @@
   text-align: center;
 }
 
-.dashboard__date-elapse .elapse-days > div + div {
+.dashboard__header-date-elapse .elapse-days > div + div {
   margin-left: -0.06em;
 }
 
-.dashboard__date-elapse .elapse-days-unit {
+.dashboard__header-date-elapse .elapse-days-unit {
   margin-left: 0.25em;
   margin-bottom: 0.214em;
 }
 
-.dashboard__date-start {
+.dashboard__header-date-start {
   font-size: 12px;
   color: #b8b8d2;
 }

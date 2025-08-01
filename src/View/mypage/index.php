@@ -11,15 +11,16 @@ $jsFiles = [
 // 컴포넌트 불러오기 전용 헬퍼 함수
 function renderComponent($name, $data = []) {
     extract($data);
-    include __DIR__ . "/../components/{$name}.php";
+    include __DIR__ . "/../../components/{$name}.php";
 }
 ?>
 
-<div class="mypage l-container">
-    <div class="l-title-box">
-        <div class="l-inner">
-            <div class="l-title">마이페이지</div>
+<div class="page page-mypage">
+    <div class="page__header">
+        <div class="container">
+            <div class="page__title">마이페이지</div>
         </div>
+
         <div class="notification-bell">
             <a href="/notification" class="btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 32 36" fill="none">
@@ -30,103 +31,105 @@ function renderComponent($name, $data = []) {
             </a>
         </div>
     </div>
+
     <div class="l-gap-box"></div>
 
-    <div class="mypage__content">
-        <div class="l-grid settings-grid">
-            <div class="l-grid__item">
-                <div class="profile-card">
-                    <div class="profile-image-box">
-                        <div class="image">
-                            <img src="/assets/images/common/profile_default.png" alt="profile">
+    <div class="page__content">
+        <div class="container">
+            <div class="l-grid settings-grid">
+                <div class="l-grid__item">
+                    <div class="profile-card">
+                        <div class="profile-image-box">
+                            <div class="image">
+                                <img src="/assets/images/common/profile_default.png" alt="profile">
+                            </div>
+                            <button type="button" class="btn btn--edit">
+                                <div class="icon icon--edit"></div>
+                                <span class="blind">프로필사진 변경하기</span>
+                            </button>
                         </div>
-                        <button type="button" class="btn btn--edit">
-                            <div class="icon icon--edit"></div>
-                            <span class="blind">프로필사진 변경하기</span>
+                        <div class="profile-info-list">
+                            <div class="info-item info-name">
+                                <div class="info-label">병원명</div>
+                                <div class="info-value">와커스</div>
+                            </div>
+                            <div class="info-item info-email">
+                                <div class="info-label">이메일</div>
+                                <div class="info-value">wacus@gmail.com</div>
+                            </div>
+                        </div>
+                        <div class="password-change-box">
+                            <button type="button" class="btn btn--border-default full" data-modal-trigger="password-change">
+                                비밀번호 변경하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="l-gap-box"></div>
+
+                <div class="l-grid__item">
+                    <div class="list">
+                        <div class="list__item">
+                            <div class="list__item-inner">
+                                <div class="list__item-text">
+                                    버전정보
+                                </div>
+                                <div class="list__item-info">
+                                    2.12
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list__item">
+                            <div class="list__item-inner">
+                                <div class="list__item-text">
+                                    고객센터
+                                </div>
+                                <div class="list__item-button">
+                                    <button type="button" class="btn--link">
+                                        <div class="icon icon--arrow-diagonal"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list__item">
+                            <div class="list__item-inner">
+                                <div class="list__item-text">
+                                    이용약관
+                                </div>
+                                <div class="list__item-button">
+                                    <button type="button" class="btn--link">
+                                        <div class="icon icon--arrow-right"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list__item bd-btm">
+                            <div class="list__item-inner">
+                                <div class="list__item-text">
+                                    개인정보처리방침
+                                </div>
+                                <div class="list__item-button">
+                                    <button type="button" class="btn--link">
+                                        <div class="icon icon--arrow-right"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="l-grid__item">
+                    <div class="user-utils">
+                        <button type="button" class="btn--logout" onclick="window.location.href = '/login'">
+                            로그아웃
+                        </button>
+                        <button type="button" class="btn--withdrawal">
+                            회원탈퇴
                         </button>
                     </div>
-                    <div class="profile-info-list">
-                        <div class="info-item info-name">
-                            <div class="info-label">병원명</div>
-                            <div class="info-value">와커스</div>
-                        </div>
-                        <div class="info-item info-email">
-                            <div class="info-label">이메일</div>
-                            <div class="info-value">wacus@gmail.com</div>
-                        </div>
-                    </div>
-                    <div class="password-change-box">
-                        <button type="button" class="btn btn--border-default full" data-modal-trigger="password-change">
-                            비밀번호 변경하기
-                        </button>
-                    </div>
                 </div>
             </div>
-
-            <div class="l-gap-box"></div>
-
-            <div class="l-grid__item">
-                <div class="list">
-                    <div class="list__item">
-                        <div class="list__item-inner l-inner">
-                            <div class="list__item-text">
-                                버전정보
-                            </div>
-                            <div class="list__item-info">
-                                2.12
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list__item">
-                        <div class="list__item-inner l-inner">
-                            <div class="list__item-text">
-                                고객센터
-                            </div>
-                            <div class="list__item-button">
-                                <button type="button" class="btn--link">
-                                    <div class="icon icon--arrow-diagonal"></div>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list__item">
-                        <div class="list__item-inner l-inner">
-                            <div class="list__item-text">
-                                이용약관
-                            </div>
-                            <div class="list__item-button">
-                                <button type="button" class="btn--link">
-                                    <div class="icon icon--arrow-right"></div>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list__item bd-btm">
-                        <div class="list__item-inner l-inner">
-                            <div class="list__item-text">
-                                개인정보처리방침
-                            </div>
-                            <div class="list__item-button">
-                                <button type="button" class="btn--link">
-                                    <div class="icon icon--arrow-right"></div>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="l-grid__item">
-                <div class="user-utils">
-                    <button type="button" class="btn--logout">
-                        로그아웃
-                    </button>
-                    <button type="button" class="btn--withdrawal">
-                        회원탈퇴
-                    </button>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>

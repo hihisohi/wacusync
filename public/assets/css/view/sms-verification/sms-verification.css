@@ -1,0 +1,94 @@
+.verify__form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.verify__form .form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.verify__form .form-row label {
+  font-size: 15px;
+  color: #737373;
+}
+
+.verify__form .form-row input:-webkit-autofill {
+  -webkit-text-fill-color: #fff;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.verify__form .form-row .input-item {
+  position: relative;
+}
+
+.verify__form .form-row .input-item .btn--send {
+  position: absolute;
+  bottom: 0.84em;
+  right: 0;
+
+  font-size: 14px;
+  padding: 0.4em 0.8em;
+}
+
+.verify__form .form-row .input-item .btn--clear {
+  display: none;
+
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translate(0, -50%);
+
+  width: 20px;
+  height: 20px;
+}
+
+.verify__form .form-row input[type="text"],
+.verify__form .form-row input[type="password"] {
+  font-size: 19px;
+  color: #fff;
+
+  width: 100%;
+  padding: 0.84em 40px 0.84em 0;
+
+  border-bottom: 1px solid #2e2f3e;
+}
+
+.verify__form .form-row input[type="text"]:focus,
+.verify__form .form-row input[type="password"]:focus {
+  border-bottom: 1px solid var(--color-active);
+}
+
+.verify__form .form-row input[type="text"].error,
+.verify__form .form-row input[type="password"].error {
+  border-color: var(--color-error);
+
+  animation-name: shakeX;
+  animation-duration: 0.3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.verify__form .form-row input[type="text"]::placeholder,
+.verify__form .form-row input[type="password"]::placeholder {
+  color: #737373;
+}
+
+@keyframes shakeX {
+  0%,
+  to {
+    transform: translateZ(0);
+  }
+
+  30%,
+  90% {
+    transform: translate3d(-0.1em, 0, 0);
+  }
+
+  60% {
+    transform: translate3d(0.1em, 0, 0);
+  }
+}

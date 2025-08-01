@@ -1,0 +1,161 @@
+.date-picker-box {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translate(-50%, 0);
+
+  width: 100%;
+  max-width: 500px;
+  padding: 0 20px;
+
+  display: flex;
+  justify-content: flex-end;
+
+  pointer-events: none;
+
+  font-size: 16px;
+  color: #4587ff;
+}
+
+.date-picker-inner {
+  pointer-events: auto;
+
+  background: #fff;
+  border: 1px solid #4587ff;
+  border-radius: 999px;
+
+  padding: 0.8em 1em;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.date-picker-box .icon--calendar {
+  width: 20px;
+  height: 20px;
+}
+
+.date-picker__input {
+  max-width: 8.8em;
+  text-align: center;
+}
+
+/* flatpickr 오버라이드 */
+.flatpickr-calendar {
+  font-family: "Lato", sans-serif;
+  font-size: 16px;
+  color: #fff;
+
+  background: #181928;
+  border-radius: 20px;
+  border: none;
+  box-shadow: none;
+
+  padding: 1.4em;
+
+  width: 84%;
+  max-width: 420px;
+}
+
+.flatpickr-rContainer {
+  margin: 0 auto;
+}
+
+.flatpickr-calendar.centered {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  z-index: 10000;
+}
+
+.flatpickr-months .flatpickr-month,
+span.flatpickr-weekday,
+.flatpickr-day {
+  color: #fff;
+}
+
+.flatpickr-months {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 1em;
+}
+
+.flatpickr-day {
+  border: none;
+}
+
+span.flatpickr-weekday {
+  font-size: 10px;
+}
+
+.flatpickr-day.inRange,
+.flatpickr-day.prevMonthDay.inRange,
+.flatpickr-day.nextMonthDay.inRange,
+.flatpickr-day.today.inRange,
+.flatpickr-day.nextMonthDay.today.inRange {
+  background: #263a68;
+}
+
+.flatpickr-day.inRange {
+  box-shadow: -5px 0 0 #263a68, 5px 0 0 #263a68;
+}
+
+.dayContainer {
+  row-gap: 0.5em;
+}
+
+.flatpickr-day.selected.startRange,
+.flatpickr-day.endRange.endRange {
+  position: relative;
+  border-radius: 50%;
+
+  background: #4587ff;
+}
+
+.flatpickr-day.selected.startRange:before,
+.flatpickr-day.endRange.endRange:before {
+  content: "";
+  display: block;
+
+  position: absolute;
+  top: 0;
+
+  width: 50%;
+  height: 100%;
+  background: #263a68;
+
+  z-index: -1;
+}
+
+.flatpickr-day.selected.startRange:before {
+  left: 50%;
+}
+
+.flatpickr-day.endRange.endRange:before {
+  right: 50%;
+}
+
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+  color: #9e9e9e;
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+  position: static;
+}
+
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+  fill: #fff;
+}
+
+.flatpickr-current-month {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  align-items: center;
+}

@@ -17,8 +17,31 @@
     }
     ?>
 
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Peddana&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
     <!-- 폰트 -->
     <link rel="stylesheet" href="/assets/fonts/font.css">
+
+    <!-- lib : axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- lib : gsap -->
+    <script src="/assets/js/lib/gsap/gsap.min.js"></script>
+    <script src="/assets/js/lib/gsap/ScrollTrigger.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script> -->
+
+    <!-- lib : chartjs -->
+    <script src="/assets/js/lib/chartjs/chart.js"></script>
+    <script src="/assets/js/lib/chartjs/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script> -->
+
+    <!-- lib : flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- 공통 CSS -->
     <?php
@@ -56,20 +79,6 @@
     <?php endif; ?>
     <?php endforeach; ?>
     <?php endif; ?>
-
-    <!-- lib : axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-    <!-- lib : gsap -->
-    <script src="/assets/js/lib/gsap/gsap.min.js"></script>
-    <script src="/assets/js/lib/gsap/ScrollTrigger.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script> -->
-
-    <!-- lib : chartjs -->
-    <script src="/assets/js/lib/chartjs/chart.js"></script>
-    <script src="/assets/js/lib/chartjs/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script> -->
 
     <!-- 공통 JS -->
     <?php
@@ -109,10 +118,10 @@
     <!-- START :: TAB BAR -->
     <?php 
     // tabBar를 숨길 모듈 리스트
-    $hideTabBarModules = ['login', 'find-id', 'find-pw', 'notification'];
-    if (!in_array($module ?? '', $hideTabBarModules)): 
+    $showTabBarModules = ['dashboard', 'stats', 'mypage', 'settings'];
+    if (in_array($module ?? '', $showTabBarModules)): 
     ?>
-    <?php include __DIR__ . '/../components/tabBar/tabBar.php'; ?>
+    <?php include __DIR__ . '/../../components/tabBar/tabBar.php'; ?>
     <?php endif; ?>
     <!-- END :: TAB BAR -->
 

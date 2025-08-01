@@ -80,9 +80,9 @@ async function initDashboardHeader() {
 
   const usernameEl = document.querySelector(".dashboard__header-title .username");
 
-  const elapseDaysEl = document.querySelector(".dashboard__date-elapse .elapse-days");
+  const elapseDaysEl = document.querySelector(".dashboard__header-date-elapse .elapse-days");
 
-  const startDateEl = document.querySelector(".dashboard__date-start .start-date");
+  const startDateEl = document.querySelector(".dashboard__header-date-start .start-date");
 
   if (!usernameEl) {
     console.error("username 요소를 찾을 수 없습니다.");
@@ -228,7 +228,6 @@ async function initDashboardSummary(dashboardCharts) {
       // 차트를 활성화된 차트 목록에 추가
       summaryCharts.add(chartKey);
     });
-    console.log(dashboardCharts.todayPatient);
 
     // dashboardCharts를 전역으로 할당 (애니메이션에서 접근 가능하도록)
     window.dashboardCharts = dashboardCharts;
@@ -378,6 +377,7 @@ async function initDashboardNoShowRate(dashboardCharts) {
           // Dataset 속성들을 여기에 정의
           backgroundColor: "#FF718B",
           borderColor: "#FF718B",
+          tension: 0.4,
           fill: false,
           pointStyle: (ctx) => {
             const lastIndex = ctx.dataset.data.length - 1;

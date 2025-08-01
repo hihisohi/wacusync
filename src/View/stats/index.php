@@ -6,10 +6,13 @@ $cssFiles = [
   
 ?>
 
-<div class="stats l-container">
-    <div class="l-title-box">
-        <div class="l-inner">
-            <div class="l-title">통계 분석</div>
+<div class="page page-stats">
+    <div class="page__header">
+        <div class="container">
+            <div class="page__title">
+                <div class="page__title-text">통계 분석</div>
+            </div>
+
             <div class="notification-bell">
                 <a href="/notification" class="btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="36" viewBox="0 0 32 36" fill="none">
@@ -22,8 +25,8 @@ $cssFiles = [
         </div>
     </div>
 
-    <div class="l-inner p-t-0">
-        <div class="stats__content">
+    <div class="page__content">
+        <div class="container">
             <div class="l-grid g-20 stats-grid">
 
                 <!-- 인구통계학적 분석 -->
@@ -85,197 +88,49 @@ $cssFiles = [
         </div>
     </div>
 
+    <div class="date-picker-box">
+        <div class="date-picker-inner">
+            <div class="date-picker__label">
+                <span class="blind">조희기간 선택</span>
+                <span class="icon icon--calendar"></span>
+            </div>
+            <input id="statsFlatpickr" class="date-picker__input" type="text" placeholder="YY.MM.DD" />
+        </div>
+    </div>
 </div>
 
 <script>
-// 커스텀 셀렉트 변경 시 호출되는 콜백 함수
-function onCustomSelectChange(selectElement) {
-    if (!selectElement) return;
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#statsFlatpickr", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            locale: { 
+            
+                weekdays: {
+                    shorthand: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+                    longhand: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+                },
+                months: {
+                    shorthand: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                    longhand: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                },
+                rangeSeparator: "~", // 여기를 원하는 한글 구분자로 변경!
+            },
+            defaultDate: ["2025-07-02", "2025-08-01"],
+            altInput: true,
+            altFormat: "y.m.d",
+            onOpen: (selectedDates, dateStr, instance) => {
+                const cal = instance.calendarContainer;
+                cal.classList.add("centered");
+            },
 
-    const selectedValue = selectElement.dataset.value;
-    const selectedText = selectElement.querySelector('.custom-select__selected').textContent;
-
-    // 셀렉트 요소를 구분하기 위한 방법들
-    const selectId = selectElement.id;
-
-
-    // 셀렉트 ID나 위치에 따라 다른 처리
-    switch (selectId) {
-        case 'dashboardSummaryCardFilter':
-            updateSummaryCardData(selectedValue);
-
-            break;
-        default:
-            console.log('기본 데이터로 업데이트');
-    }
-
-}
-
-// 기간 설정에 따른 summary card 데이터 업데이트 함수
-function updateSummaryCardData(period) {
-    switch (period) {
-        case 'daily':
-            console.log('일별 데이터로 업데이트');
-            // 일별 데이터 api 호출
-
-            break;
-        case 'weekly':
-            console.log('주간 데이터로 업데이트');
-            // 주간 데이터 api 호출
-
-            break;
-        case 'monthly':
-            console.log('월간 데이터로 업데이트');
-            // 월간 데이터 api 호출
-
-            break;
-        case 'yearly':
-            console.log('연간 데이터로 업데이트');
-            // 연간 데이터 api 호출
-
-            break;
-        default:
-            console.log('기본 데이터로 업데이트');
-    }
-
-    // API response : 기간별 업데이트 데이터 (더미)
-    const data = {
-        todayPatient: {
-            value: Math.floor(Math.random() * 101), // 0–100
-            rate: Math.floor(Math.random() * 41) - 20, // -20–20
-            graph: {
-                "2025-07-01": Math.floor(Math.random() * 101),
-                "2025-07-02": Math.floor(Math.random() * 101),
-                "2025-07-03": Math.floor(Math.random() * 101),
-                "2025-07-04": Math.floor(Math.random() * 101),
-                "2025-07-05": Math.floor(Math.random() * 101),
-                "2025-07-06": Math.floor(Math.random() * 101),
-                "2025-07-07": Math.floor(Math.random() * 101),
-                "2025-07-08": Math.floor(Math.random() * 101),
-                "2025-07-09": Math.floor(Math.random() * 101),
-                "2025-07-10": Math.floor(Math.random() * 101),
+              // 달력 닫힐 때
+            onClose: (selectedDates, dateStr, instance) => {
+                const cal = instance.calendarContainer;
+                cal.classList.remove("centered");
             }
-        },
-        websiteVisitor: {
-            value: Math.floor(Math.random() * 5001), // 0–5000
-            rate: Math.floor(Math.random() * 201) - 100, // -100–100
-            graph: {
-                "2025-07-01": Math.floor(Math.random() * 5001),
-                "2025-07-02": Math.floor(Math.random() * 5001),
-                "2025-07-03": Math.floor(Math.random() * 5001),
-                "2025-07-04": Math.floor(Math.random() * 5001),
-                "2025-07-05": Math.floor(Math.random() * 5001),
-                "2025-07-06": Math.floor(Math.random() * 5001),
-                "2025-07-07": Math.floor(Math.random() * 5001),
-                "2025-07-08": Math.floor(Math.random() * 5001),
-                "2025-07-09": Math.floor(Math.random() * 5001),
-                "2025-07-10": Math.floor(Math.random() * 5001),
-            }
-        },
-        newPatient: {
-            value: Math.floor(Math.random() * 61), // 0–60
-            rate: Math.floor(Math.random() * 201) - 100, // -100–100
-            graph: {
-                "2025-07-01": Math.floor(Math.random() * 101),
-                "2025-07-02": Math.floor(Math.random() * 101),
-                "2025-07-03": Math.floor(Math.random() * 101),
-                "2025-07-04": Math.floor(Math.random() * 101),
-                "2025-07-05": Math.floor(Math.random() * 101),
-                "2025-07-06": Math.floor(Math.random() * 101),
-                "2025-07-07": Math.floor(Math.random() * 101),
-                "2025-07-08": Math.floor(Math.random() * 101),
-                "2025-07-09": Math.floor(Math.random() * 101),
-                "2025-07-10": Math.floor(Math.random() * 101),
-            }
-        },
-        noShowRate: {
-            value: Math.round((Math.random() * 1000) / 10 * 10) / 10, // 0.0–100.0
-            rate: Math.floor(Math.random() * 201) - 100, // -100–100
-            graph: {
-                "2025-07-01": Math.floor(Math.random() * 101),
-                "2025-07-02": Math.floor(Math.random() * 101),
-                "2025-07-03": Math.floor(Math.random() * 101),
-                "2025-07-04": Math.floor(Math.random() * 101),
-                "2025-07-05": Math.floor(Math.random() * 101),
-                "2025-07-06": Math.floor(Math.random() * 101),
-                "2025-07-07": Math.floor(Math.random() * 101),
-                "2025-07-08": Math.floor(Math.random() * 101),
-                "2025-07-09": Math.floor(Math.random() * 101),
-                "2025-07-10": Math.floor(Math.random() * 101),
-            }
-        }
-    };
-
-    updateCard('todayPatient', data.todayPatient);
-    updateCard('websiteVisitor', data.websiteVisitor);
-    updateCard('newPatient', data.newPatient);
-    updateCard('noShowRate', data.noShowRate);
-
-    const charts = window.statsCharts;
-
-    if (charts.todayPatient) updateChart(charts.todayPatient, data.todayPatient);
-    if (charts.websiteVisitor) updateChart(charts.websiteVisitor, data.websiteVisitor);
-    if (charts.newPatient) updateChart(charts.newPatient, data.newPatient);
-    if (charts.noShowRate) updateChart(charts.noShowRate, data.noShowRate);
-}
-
-function updateCard(cardType, cardData) {
-    // 카드 요소들 찾기
-    const card = document.querySelector(`[data-card-type="${cardType}"]`);
-
-    // 값 업데이트
-    const valueElement = card.querySelector('.card__title-value');
-    if (valueElement) {
-        valueElement.textContent = cardData.value
-    }
-
-    // 증감률 업데이트
-    const rateElement = card.querySelector('.card__title-rate');
-    const rateValueElement = card.querySelector('.card__title-rate-value');
-    const rateIconElement = card.querySelector('.icon');
-
-    if (rateElement && rateValueElement && rateIconElement) {
-        const isIncrease = cardData.rate > 0;
-        const rateType = isIncrease ? 'increase' : 'decrease';
-
-        // 증감률 값 업데이트
-        rateValueElement.textContent = `${cardData.rate}`;
-
-        // 증감률 스타일 업데이트
-        rateElement.setAttribute('data-rate', rateType);
-
-        // 아이콘 클래스 업데이트
-        rateIconElement.className = `icon icon--${rateType}`;
-    }
-}
-
-function updateChart(chart, data) {
-    if (!chart) return;
-
-    // 실제 구현 시 여기에 해당 기간의 새로운 데이터를 가져와서 차트 업데이트
-    console.log(`Chart ${chart.canvas.id}를 ${data} 데이터로 업데이트`);
-
-    // chart.data.datasets[0].data = newData;
-    // chart.data.labels = newLabels;
-
-    // 차트 다시 그리기
-    chart.data.datasets[0].data = [
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-    ];
-    chart.data.datasets[0].backgroundColor = data.rate > 0 ? "#05BA7B" : "#FB3636";
-    chart.data.datasets[0].borderColor = data.rate > 0 ? "#05BA7B" : "#FB3636";
-
-    chart.update();
-}
+      });
+    });
 </script>
 
 <style>

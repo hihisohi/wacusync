@@ -82,10 +82,9 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("로그인 성공");
 
       // 토큰 저장
-      localStorage.setItem("token", response.data.token);
+      //   localStorage.setItem("token", response.data.token);
 
-      // 대시보드 페이지로 이동
-      window.location.href = "/dashboard";
+      window.location.href = "/sms-verification";
     } else {
       console.log("로그인 실패");
 

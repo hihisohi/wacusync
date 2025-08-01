@@ -64,6 +64,18 @@ $routes = [
         $view   = __DIR__ . '/../src/view/auth/find-pw.php';
         include __DIR__ . '/../src/view/layouts/index.php';
     },
+    'sms-verification' => function() {
+        $title  = 'SMS 인증 | 와커스CRM';
+        $module = 'sms-verification';
+        $view   = __DIR__ . '/../src/view/auth/sms-verification.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
+    },
+    'welcome' => function() {
+        $title  = '반가워요 | 와커스CRM';
+        $module = 'welcome';
+        $view   = __DIR__ . '/../src/view/auth/welcome.php';
+        include __DIR__ . '/../src/view/layouts/index.php';
+    },
     'dashboard' => function() {
         $title  = '대시보드 | 와커스CRM';
         $module = 'dashboard';

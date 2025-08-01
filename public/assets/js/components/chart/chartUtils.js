@@ -21,6 +21,7 @@ export const ChartUtils = {
             font: {
               family: "'Pretendard', sans-serif",
               size: 12,
+              color: "#615E83",
             },
           },
         },

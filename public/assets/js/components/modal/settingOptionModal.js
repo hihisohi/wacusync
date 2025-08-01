@@ -1,50 +1,73 @@
-/**
- * 설정 옵션 모달 클래스
- * Modal 클래스를 상속받아 특화된 기능을 제공합니다.
- */
-class SettingOptionModal extends Modal {
-  constructor() {
-    super('setting-option-modal');
+function openSettingOptionModal(settingKey, settingOptions) {
+  const modal = document.getElementById("setting-option-modal");
+  if (!modal) return;
+
+  const headerTitleEl = modal.querySelector(".modal-header__title");
+  if (headerTitleEl) headerTitleEl.textContent = settingOptions.title;
+
+  const bodyEl = modal.querySelector(".modal-body__content");
+  if (bodyEl) {
+    const options = settingOptions.optionsObject;
+
+    const optionEls = Object.keys(options).map((option) => {
+      const div = document.createElement("div");
+      const input = document.createElement("input");
+      const label = document.createElement("label");
+
+      div.className = "option-item";
+
+      input.type = "radio";
+      input.name = settingKey;
+      input.value = options[option];
+      input.id = option;
+      input.checked = options[option].flag;
+
+      label.textContent = options[option].label;
+      label.htmlFor = option;
+
+      div.append(input, label);
+
+      bodyEl.querySelector(".option-list").append(div);
+    });
   }
 
-  onOpen() {
-    // 설정 옵션 모달이 열릴 때 실행할 로직
-    // 예: 현재 설정값 로드, 라디오 버튼 상태 설정 등
-    this.loadCurrentSettings();
-  }
+  modal.classList.add("active");
+}
 
-  onClose() {
-    // 설정 옵션 모달이 닫힐 때 실행할 로직
-  }
+function closeSettingOptionModal() {
+  const modal = document.getElementById("setting-option-modal");
+  if (!modal) return;
 
-  loadCurrentSettings() {
-    // 현재 설정값을 불러와서 폼에 반영하는 로직
-    // 예: localStorage나 API에서 설정값 가져오기
-  }
-
-  saveSettings() {
-    // 선택된 설정을 저장하는 로직
-    const selectedOption = this.getElement('input[name="setting"]:checked');
-    if (selectedOption) {
-      // 설정 저장 로직
-      console.log('Setting saved:', selectedOption.value);
-      this.close();
+  const bodyEl = modal.querySelector(".modal-body__content");
+  if (bodyEl) {
+    const optionList = bodyEl.querySelector(".option-list");
+    if (optionList) {
+      // option-list의 모든 자식 요소 제거
+      optionList.innerHTML = "";
     }
   }
 
-  // 설정 관련 특화 메서드들
-  handleOptionChange(optionValue) {
-    // 옵션 변경 처리 로직
-  }
+  modal.classList.remove("active");
 }
 
-// DOM 로드 후 인스턴스 생성 및 등록
-document.addEventListener('DOMContentLoaded', () => {
-  const settingOptionModal = new SettingOptionModal();
-  window.modalManager.register('setting-option-modal', settingOptionModal);
-  
-  // 하위 호환성을 위한 전역 함수 (점진적 제거 예정)
-  window.ModalAPI = window.ModalAPI || {};
-  window.ModalAPI.openSettingOptionModal = () => settingOptionModal.open();
-  window.ModalAPI.closeSettingOptionModal = () => settingOptionModal.close();
+// 이벤트 위임으로 전역 함수 노출 없이 처리
+document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("click", (e) => {
+    const action = e.target.closest(".btn--close")?.dataset.action;
+
+    if (action === "openSettingOptionModal") {
+      const target = e.target.dataset.target;
+      if (target) openSettingOptionModal(target);
+    }
+
+    if (action === "closeSettingOptionModal") {
+      closeSettingOptionModal();
+    }
+  });
 });
+
+// 필요시에만 API로 노출
+window.ModalAPI = {
+  openSettingOptionModal: openSettingOptionModal,
+  closeSettingOptionModal: closeSettingOptionModal,
+};

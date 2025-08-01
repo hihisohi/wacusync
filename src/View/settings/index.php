@@ -11,29 +11,32 @@ $jsFiles = [
 // 컴포넌트 불러오기 전용 헬퍼 함수
 function renderComponent($name, $data = []) {
     extract($data);
-    include __DIR__ . "/../components/{$name}.php";
+    include __DIR__ . "/../../components/{$name}.php";
 }
 ?>
 
-<div class="settings l-container">
-    <div class="l-title-box">
-        <div class="l-inner">
-            <div class="l-title">시스템 설정</div>
+<div class="page page-settings">
+    <div class="page__header">
+        <div class="container">
+            <div class="page__title">
+                <div class="page__title-text">시스템 설정</div>
+            </div>
         </div>
     </div>
+
     <div class="l-gap-box"></div>
 
-    <div class="settings__content">
+    <div class="page__content">
         <div class="l-grid settings-grid">
             <div class="l-grid__item">
                 <div class="list">
                     <div class="list__title">
-                        <div class="list__item-inner l-inner">
+                        <div class="list__item-inner">
                             데이터 동기화 설정
                         </div>
                     </div>
                     <div class="list__item">
-                        <div class="list__item-inner l-inner">
+                        <div class="list__item-inner">
                             <div class="list__item-text">
                                 CRM 자동화
                             </div>
@@ -47,7 +50,7 @@ function renderComponent($name, $data = []) {
                         </div>
                     </div>
                     <div class="list__item">
-                        <div class="list__item-inner l-inner">
+                        <div class="list__item-inner">
                             <div class="list__item-text">
                                 홈페이지 데이터 동기화
                             </div>
@@ -61,7 +64,7 @@ function renderComponent($name, $data = []) {
                         </div>
                     </div>
                     <div class="list__item">
-                        <div class="list__item-inner l-inner">
+                        <div class="list__item-inner">
                             <div class="list__item-text">
                                 동기화 주기
                             </div>
@@ -79,12 +82,12 @@ function renderComponent($name, $data = []) {
             <div class="l-grid__item">
                 <div class="list">
                     <div class="list__title">
-                        <div class="list__item-inner l-inner">
+                        <div class="list__item-inner">
                             보고서 설정
                         </div>
                     </div>
                     <div class="list__item">
-                        <div class="list__item-inner l-inner">
+                        <div class="list__item-inner">
                             <div class="list__item-text">
                                 주간 보고서
                             </div>
@@ -98,7 +101,7 @@ function renderComponent($name, $data = []) {
                         </div>
                     </div>
                     <div class="list__item">
-                        <div class="list__item-inner l-inner">
+                        <div class="list__item-inner">
                             <div class="list__item-text">
                                 월간 보고서
                             </div>
@@ -112,7 +115,7 @@ function renderComponent($name, $data = []) {
                         </div>
                     </div>
                     <div class="list__item">
-                        <div class="list__item-inner l-inner">
+                        <div class="list__item-inner">
                             <div class="list__item-text">
                                 보고서 포맷
                             </div>
@@ -128,6 +131,7 @@ function renderComponent($name, $data = []) {
 
         </div>
     </div>
+
 </div>
 
 <?php
