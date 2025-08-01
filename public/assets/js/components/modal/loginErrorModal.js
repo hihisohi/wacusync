@@ -1,37 +1,31 @@
-function openLoginErrorModal(message) {
-  const modal = document.getElementById("login-error-modal");
-  if (!modal) return;
-  // 내용 교체
-  const bodyEl = modal.querySelector(".modal-body__content");
-  if (bodyEl) bodyEl.textContent = message;
-  // 모달 열기
-  modal.classList.add("active");
+/**
+ * 로그인 에러 모달 클래스
+ * Modal 클래스를 상속받아 특화된 기능을 제공합니다.
+ */
+class LoginErrorModal extends Modal {
+  constructor() {
+    super("login-error-modal");
+  }
+
+  open(message = "") {
+    if (message) {
+      this.setContent(".modal-body__content", message);
+    }
+    return super.open();
+  }
+
+  setErrorMessage(message) {
+    this.setContent(".modal-body__content", message);
+  }
 }
 
-function closeLoginErrorModal() {
-  const modal = document.getElementById("login-error-modal");
-  if (!modal) return;
-
-  modal.classList.remove("active");
-}
-
-// 이벤트 위임으로 전역 함수 노출 없이 처리
+// DOM 로드 후 인스턴스 생성 및 등록
 document.addEventListener("DOMContentLoaded", () => {
-  document.addEventListener("click", (e) => {
-    const action = e.target.dataset.action;
+  const loginErrorModal = new LoginErrorModal();
+  window.modalManager.register("login-error-modal", loginErrorModal);
 
-    if (action === "openLoginErrorModal") {
-      const target = e.target.dataset.target;
-      if (target) openLoginErrorModal(target);
-    }
-
-    if (action === "closeLoginErrorModal") {
-      closeLoginErrorModal();
-    }
-  });
+  // 하위 호환성을 위한 전역 함수 (점진적 제거 예정)
+  window.ModalAPI = window.ModalAPI || {};
+  window.ModalAPI.openLoginErrorModal = (message) => loginErrorModal.open(message);
+  window.ModalAPI.closeLoginErrorModal = () => loginErrorModal.close();
 });
-// 필요시에만 API로 노출
-window.ModalAPI = {
-  openLoginErrorModal: openLoginErrorModal,
-  closeLoginErrorModal: closeLoginErrorModal,
-};
